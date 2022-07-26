@@ -84,14 +84,26 @@ export class GraphComponent implements OnChanges, AfterViewInit {
     this.drawing = false;
   }
 
-  logPan(e: HammerInput) {
-    console.log("PAN");
-    console.log(e.center.x, e.center.y);
+  handlePanstart(e: HammerInput | Event) {
+    e = e as HammerInput;
+    const mouseEvent = {
+      clientX: e.center.x,
+      clientY: e.center.y
+    } as MouseEvent;
+    this.handleMouseDown(mouseEvent);
   }
 
-  logTouchstart(e: TouchEvent) {
-    console.log("Touch");
-    console.log(e);
+  handlePan(e: HammerInput | Event) {
+    e = e as HammerInput;
+    const mouseEvent = {
+      clientX: e.center.x,
+      clientY: e.center.y
+    } as MouseEvent;
+    this.handleMouseMove(mouseEvent);
+  }
+
+  handlePanend() {
+    this.handleMouseUp();
   }
 
   handleReset() {
