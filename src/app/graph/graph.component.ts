@@ -1,4 +1,5 @@
-import { AfterViewInit, Component, ElementRef, ViewChild } from '@angular/core';
+import { AfterViewInit, Component, ElementRef, EventEmitter, Input, OnChanges, Output, SimpleChanges, ViewChild } from '@angular/core';
+import { GraphOperations } from './graph-operations';
 import { Point } from './point';
 
 @Component({
@@ -6,33 +7,45 @@ import { Point } from './point';
   templateUrl: './graph.component.html',
   styleUrls: ['./graph.component.sass']
 })
-export class GraphComponent implements AfterViewInit {
+export class GraphComponent implements OnChanges, AfterViewInit {
+
+  @Input()
+  reset: boolean = false;
+
+  @Output()
+  resetChange = new EventEmitter<boolean>();
 
   @ViewChild('canvas')
   canvas: ElementRef<HTMLCanvasElement> = {} as ElementRef;
-  context: CanvasRenderingContext2D = {} as CanvasRenderingContext2D;
 
   drawing: boolean = false;
+  drawer: GraphOperations = {} as GraphOperations;
   previousPosition?: Point;
   currentPosition?: Point;
 
   time: number = 0;
 
   ngAfterViewInit(): void {
-    const context = this.canvas.nativeElement.getContext('2d')!;
-    this.context = context;
-    context.lineWidth = 1;
-    context.lineCap = 'round';
+    this.drawer = new GraphOperations(this.canvas.nativeElement);
+    this.drawer.reset();
+  }
+
+  ngOnChanges(changes: SimpleChanges) {
+    const prevReset = changes['reset'].previousValue;
+    if (prevReset === false && this.reset === true) {
+      this.handleReset();
+    }
   }
 
   handleMouseMove(event: MouseEvent) {
     if (!this.drawing) return;
 
     this.movePosition(event);
-    this.drawInput();
+    this.drawer.drawLine(this.previousPosition, this.currentPosition);
   }
 
   handleMouseDown(event: MouseEvent) {
+    this.resetChange.emit(false);
     this.movePosition(event);
     this.drawing = true;
   }
@@ -44,7 +57,6 @@ export class GraphComponent implements AfterViewInit {
       x: event.clientX - rect.left,
       y: event.clientY - rect.top
     };
-    console.log(this.previousPosition, this.currentPosition);
   }
 
   handleMouseUp() {
@@ -60,41 +72,13 @@ export class GraphComponent implements AfterViewInit {
     this.drawing = false;
   }
 
+  handleReset() {
+    this.drawer.reset();
+  }
+
   updateTime(): void {
     this.time += 0.1;
     this.time %= 15;
-  }
-
-  repaint(): void {
-    const context = this.context;
-    context.clearRect(0, 0, 500, 500);
-    this.drawCircle();
-    this.updateTime();
-  }
-
-  drawCircle(): void {
-    const anglesPerSecond = 2 * Math.PI / 15;
-    const context = this.context;
-    context.strokeStyle = "#000000";
-
-    context.beginPath();
-    context.moveTo(300, 300);
-    context.arc(300, 300, 100, this.time * anglesPerSecond, 2 * Math.PI + this.time * anglesPerSecond);
-    context.stroke();
-  }
-
-  drawInput() {
-    const prevPos = this.previousPosition;
-    const curPos = this.currentPosition;
-    if (!prevPos || !curPos) return;
-
-    const context = this.context;
-    context.strokeStyle = "#000000";
-    context.beginPath();
-    context.moveTo(prevPos.x, prevPos.y);
-    context.lineTo(curPos.x, curPos.y);
-    context.stroke();
-    context.closePath();
   }
 
 }

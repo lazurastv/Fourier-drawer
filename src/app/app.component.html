@@ -4,12 +4,15 @@
     <p>Draw a shape below, and a Fourier series will be calculated approximating it!</p>
   </div>
   <div class="container mb-5">
-    <graph></graph>
+    <graph [(reset)]="reset"></graph>
     <div class="row align-items-center">
       <div class="col-auto">
-        <button class="btn btn-primary">Reset</button>
+        <button
+          class="btn btn-primary"
+          (click)="handleReset()"
+        >Reset</button>
       </div>
-      <div class="col-auto">
+      <div class="col-3">
         <label
           for="terms"
           class="form-label"

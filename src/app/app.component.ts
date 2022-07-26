@@ -6,5 +6,11 @@ import { Component } from '@angular/core';
   styleUrls: ['./app.component.sass']
 })
 export class AppComponent {
-  title = 'fourier';
+
+  reset: boolean = false;
+
+  handleReset() {
+    this.reset = true;
+  }
+
 }
