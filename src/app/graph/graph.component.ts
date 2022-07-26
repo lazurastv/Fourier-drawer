@@ -1,4 +1,4 @@
-import { AfterViewInit, Component, ElementRef, EventEmitter, Input, OnChanges, OnInit, Output, SimpleChanges, ViewChild } from '@angular/core';
+import { AfterViewInit, Component, ElementRef, EventEmitter, Input, OnChanges, Output, SimpleChanges, ViewChild } from '@angular/core';
 import { fromEvent } from 'rxjs';
 import ComplexNumber from './ft/complex-number';
 import { dft, idft } from './ft/dft';
@@ -44,7 +44,8 @@ export class GraphComponent implements OnChanges, AfterViewInit {
   }
 
   resizeEvent = () => {
-    this.canvas.nativeElement.width = Math.min(window.innerWidth - 200, 800);
+    this.canvas.nativeElement.width = Math.min(window.innerWidth - 100, 800);
+    this.canvas.nativeElement.height = 5 / 8 * this.canvas.nativeElement.width;
     this.drawer.reset();
   }
 
@@ -66,10 +67,10 @@ export class GraphComponent implements OnChanges, AfterViewInit {
   }
 
   handleMouseDown(event: MouseEvent) {
+    if (this.drawing) return;
     this.handleReset();
     this.resetChange.emit(false);
     this.addPoint(event);
-    this.drawer.drawPoints(this.points);
     this.drawing = true;
   }
 
@@ -116,6 +117,7 @@ export class GraphComponent implements OnChanges, AfterViewInit {
   handleReset() {
     this.points = [];
     this.dftPoints = [];
+    this.time = 0;
   }
 
   increaseTime(): void {

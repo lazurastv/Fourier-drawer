@@ -1,9 +1,9 @@
-<main class="align-items-center justify-content-center">
-  <div class="container mt-2 mt-md-5">
+<main>
+  <div class="container mt-5">
     <h3 class="text-center">Fourier drawer</h3>
     <p class="text-center">Draw a shape below, and a Discreet Fourier series will be calculated approximating it!</p>
   </div>
-  <div class="container mb-2">
+  <div class="container">
     <graph
       [circles]="circles"
       [terms]="terms"
@@ -12,20 +12,17 @@
       (termsChange)="handleTermsChange($event)"
     ></graph>
     <div class="row justify-content-center align-items-center">
-      <div class="col-auto">
+      <div class="col-auto mt-3">
         <button
           class="btn btn-primary"
           (click)="handleReset()"
         >Reset</button>
       </div>
-      <div class="col-8 col-sm-8 col-md-3">
-        <label
-          for="terms"
-          class="form-label"
-        >Terms (max {{maxTerms}})</label>
+      <div class="col-8 col-sm-8 col-md-3 mt-3">
         <input
           id="terms"
           class="form-control"
+          placeholder="Terms (max {{maxTerms}})"
           (ngModelChange)="handleTermsInputChange($event)"
           [(ngModel)]="termsInput"
         >

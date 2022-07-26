@@ -12,24 +12,29 @@ export class AppComponent {
   terms: number = 0;
   speed: number = 5;
 
-  termsInput: string = "0";
+  termsInput: string = "";
   maxTerms: number = 0;
 
   handleReset() {
     this.reset = true;
     this.terms = 0;
-    this.termsInput = "0";
     this.maxTerms = 0;
   }
 
   handleTermsChange(terms: number) {
     this.terms = terms;
     this.maxTerms = terms;
-    this.termsInput = terms.toString();
   }
 
   handleTermsInputChange(terms: string) {
+    if (terms === "") {
+      this.terms = this.maxTerms;
+      return;
+    }
     this.terms = parseInt(terms);
+    if (this.terms === NaN) {
+      console.error("Wrong input");
+    }
   }
 
 }
