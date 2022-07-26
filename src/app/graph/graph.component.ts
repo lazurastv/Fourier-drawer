@@ -1,6 +1,7 @@
 import { AfterViewInit, Component, ElementRef, EventEmitter, Input, OnChanges, Output, SimpleChanges, ViewChild } from '@angular/core';
+import ComplexNumber from './ft/complex-number';
+import { dft, idft } from './ft/dft';
 import { GraphOperations } from './graph-operations';
-import { Point } from './point';
 
 @Component({
   selector: 'graph',
@@ -20,7 +21,7 @@ export class GraphComponent implements OnChanges, AfterViewInit {
 
 
   drawing: boolean = false;
-  points: Point[] = [];
+  points: ComplexNumber[] = [];
   drawer: GraphOperations = {} as GraphOperations;
 
   time: number = 0;
@@ -52,7 +53,7 @@ export class GraphComponent implements OnChanges, AfterViewInit {
 
   addPoint(event: MouseEvent) {
     const rect = this.canvas.nativeElement.getBoundingClientRect();
-    const point = new Point(event.clientX - rect.left, event.clientY - rect.top);
+    const point = new ComplexNumber(event.clientX - rect.left, event.clientY - rect.top);
     const prevPoint = this.points[this.points.length - 1];
 
     if (!prevPoint || !prevPoint.equals(point)) this.points.push(point);

@@ -1,4 +1,4 @@
-import { Point } from "./point";
+import ComplexNumber from "./ft/complex-number";
 
 export class GraphOperations {
     canvas: HTMLCanvasElement;
@@ -31,13 +31,13 @@ export class GraphOperations {
         context.closePath();
     }
 
-    drawPoints(points: Point[], close: boolean = false) {
+    drawPoints(points: ComplexNumber[], close: boolean = false) {
         if (points.length < 2) return;
         this.reset();
 
-        let startPoint: Point | undefined;
-        let prevPoint: Point | undefined;
-        let curPoint: Point | undefined;
+        let startPoint: ComplexNumber | undefined;
+        let prevPoint: ComplexNumber | undefined;
+        let curPoint: ComplexNumber | undefined;
         for (const point of points) {
             if (!curPoint) {
                 startPoint = point;
@@ -51,15 +51,15 @@ export class GraphOperations {
         if (close) this.drawLine(curPoint, startPoint);
     }
 
-    drawLine(prevPos?: Point, curPos?: Point) {
+    drawLine(prevPos?: ComplexNumber, curPos?: ComplexNumber) {
         if (!prevPos || !curPos) return;
 
         const context = this.context;
         context.strokeStyle = "#000000";
 
         context.beginPath();
-        context.moveTo(prevPos.x, prevPos.y);
-        context.lineTo(curPos.x, curPos.y);
+        context.moveTo(prevPos.re, prevPos.im);
+        context.lineTo(curPos.re, curPos.im);
         context.stroke();
         context.closePath();
     }
