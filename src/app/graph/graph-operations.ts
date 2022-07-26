@@ -6,7 +6,6 @@ export class GraphOperations {
 
     constructor(canvas: HTMLCanvasElement) {
         this.canvas = canvas;
-        this.context.fillStyle = "white";
         this.context.lineCap = 'round';
         this.context.shadowColor = 'black';
         this.context.shadowBlur = 1;
@@ -16,6 +15,7 @@ export class GraphOperations {
         const context = this.context;
         context.lineWidth = 2;
         context.strokeStyle = "black";
+        context.fillStyle = "white";
     }
 
     backgroundStyle() {

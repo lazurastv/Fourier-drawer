@@ -1,4 +1,5 @@
-import { AfterViewInit, Component, ElementRef, EventEmitter, Input, OnChanges, Output, SimpleChanges, ViewChild } from '@angular/core';
+import { AfterViewInit, Component, ElementRef, EventEmitter, Input, OnChanges, OnInit, Output, SimpleChanges, ViewChild } from '@angular/core';
+import { fromEvent } from 'rxjs';
 import ComplexNumber from './ft/complex-number';
 import { dft, idft } from './ft/dft';
 import { GraphOperations } from './graph-operations';
@@ -38,6 +39,12 @@ export class GraphComponent implements OnChanges, AfterViewInit {
 
   ngAfterViewInit(): void {
     this.drawer = new GraphOperations(this.canvas.nativeElement);
+    this.resizeEvent();
+    fromEvent(window, 'resize').subscribe(this.resizeEvent);
+  }
+
+  resizeEvent = () => {
+    this.canvas.nativeElement.width = Math.min(window.innerWidth - 200, 800);
     this.drawer.reset();
   }
 
