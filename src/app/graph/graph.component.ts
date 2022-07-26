@@ -18,10 +18,10 @@ export class GraphComponent implements OnChanges, AfterViewInit {
   @ViewChild('canvas')
   canvas: ElementRef<HTMLCanvasElement> = {} as ElementRef;
 
+
   drawing: boolean = false;
+  points: Point[] = [];
   drawer: GraphOperations = {} as GraphOperations;
-  previousPosition?: Point;
-  currentPosition?: Point;
 
   time: number = 0;
 
@@ -39,27 +39,27 @@ export class GraphComponent implements OnChanges, AfterViewInit {
 
   handleMouseMove(event: MouseEvent) {
     if (!this.drawing) return;
-
-    this.movePosition(event);
-    this.drawer.drawLine(this.previousPosition, this.currentPosition);
+    this.addPoint(event);
+    this.drawer.drawPoints(this.points);
   }
 
   handleMouseDown(event: MouseEvent) {
     this.resetChange.emit(false);
-    this.movePosition(event);
+    this.addPoint(event);
+    this.drawer.drawPoints(this.points);
     this.drawing = true;
   }
 
-  movePosition(event: MouseEvent) {
+  addPoint(event: MouseEvent) {
     const rect = this.canvas.nativeElement.getBoundingClientRect();
-    this.previousPosition = this.currentPosition;
-    this.currentPosition = {
-      x: event.clientX - rect.left,
-      y: event.clientY - rect.top
-    };
+    const point = new Point(event.clientX - rect.left, event.clientY - rect.top);
+    const prevPoint = this.points[this.points.length - 1];
+
+    if (!prevPoint || !prevPoint.equals(point)) this.points.push(point);
   }
 
   handleMouseUp() {
+    this.drawer.drawPoints(this.points, true);
     this.disableDrawing();
   }
 
@@ -68,11 +68,11 @@ export class GraphComponent implements OnChanges, AfterViewInit {
   }
 
   disableDrawing() {
-    this.currentPosition = undefined;
     this.drawing = false;
   }
 
   handleReset() {
+    this.points = [];
     this.drawer.reset();
   }
 

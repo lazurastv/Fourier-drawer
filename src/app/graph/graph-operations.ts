@@ -31,6 +31,26 @@ export class GraphOperations {
         context.closePath();
     }
 
+    drawPoints(points: Point[], close: boolean = false) {
+        if (points.length < 2) return;
+        this.reset();
+
+        let startPoint: Point | undefined;
+        let prevPoint: Point | undefined;
+        let curPoint: Point | undefined;
+        for (const point of points) {
+            if (!curPoint) {
+                startPoint = point;
+                curPoint = point;
+                continue;
+            }
+            prevPoint = curPoint;
+            curPoint = point;
+            this.drawLine(prevPoint, curPoint);
+        }
+        if (close) this.drawLine(curPoint, startPoint);
+    }
+
     drawLine(prevPos?: Point, curPos?: Point) {
         if (!prevPos || !curPos) return;
 
