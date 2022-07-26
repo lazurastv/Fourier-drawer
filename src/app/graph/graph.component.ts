@@ -18,7 +18,7 @@ export class GraphComponent implements OnChanges, AfterViewInit {
   @Input()
   circles: boolean = false;
   @Input()
-  speed: number = 5;
+  rendersPerTick: number = 5;
 
   @Output()
   resetChange = new EventEmitter<boolean>();
@@ -28,13 +28,15 @@ export class GraphComponent implements OnChanges, AfterViewInit {
   @ViewChild('canvas')
   canvas: ElementRef<HTMLCanvasElement> = {} as ElementRef;
 
+  static readonly POINTS_PER_SECOND = 120;
 
   drawing: boolean = false;
   points: ComplexNumber[] = [];
   dftPoints: ComplexNumber[] = [];
   drawer: GraphOperations = {} as GraphOperations;
 
-  time: number = 0;
+  render: number = 0;
+  tick: number = 0;
   prevTime?: number;
 
   ngAfterViewInit(): void {
@@ -57,6 +59,10 @@ export class GraphComponent implements OnChanges, AfterViewInit {
     const termsChange = changes['terms'];
     if (termsChange?.firstChange === false) {
       this.dftPoints = [];
+    }
+    const rendersPerTickChange = changes['rendersPerTick'];
+    if (rendersPerTickChange?.previousValue === 0) {
+      this.animate(dft(this.points));
     }
   }
 
@@ -107,39 +113,50 @@ export class GraphComponent implements OnChanges, AfterViewInit {
   handleReset() {
     this.points = [];
     this.dftPoints = [];
-    this.time = 0;
+    this.tick = 0;
   }
 
   increaseTime(): void {
-    if (!this.prevTime) this.prevTime = Date.now();
-    if (this.speed === 0) {
-      this.prevTime = undefined;
-      return;
-    }
-    const delta = Date.now() - this.prevTime;
-    const msPerPoint = 100 / this.speed;
-    if (delta < msPerPoint) return;
+    const delta = Date.now() - (this.prevTime ?? 0);
+    if (delta < 1000 / GraphComponent.POINTS_PER_SECOND) return;
 
     this.prevTime = Date.now();
-    this.time += 1;
-    this.time %= this.points.length;
+
+    this.render += 1;
+    if (this.render < this.rendersPerTick) return;
+    this.render = 0;
+    this.tick = this.nextTick;
   }
 
   animate(dftCoeffs: ComplexNumber[]) {
+    if (this.rendersPerTick === 0) return;
     this.drawer.reset();
     if (this.drawing || this.points.length === 0) return;
 
     this.drawer.drawPoints(this.points, true);
-    const idftCoeffs = idft(dftCoeffs, this.time).slice(0, this.terms + 1);
-    this.drawer.drawRadii(idftCoeffs);
 
+    const idftCoeffs = idft(dftCoeffs, this.tick).slice(0, this.terms + 1);
+    const nextIdftCoeffs = idft(dftCoeffs, this.nextTick).slice(0, this.terms + 1);
+    const currentWeight = new ComplexNumber(this.rendersPerTick - this.render);
+    const nextWeight = new ComplexNumber(this.render);
+    for (let i = 0; i < idftCoeffs.length; i++) {
+      const current = idftCoeffs[i].multiply(currentWeight);
+      const next = nextIdftCoeffs[i].multiply(nextWeight);
+      idftCoeffs[i] = current.add(next).divide(this.rendersPerTick);
+    }
+
+    this.drawer.drawRadii(idftCoeffs);
     if (this.circles) this.drawer.drawCircles(idftCoeffs);
 
-    this.dftPoints[this.time] = idftCoeffs.pop()!;
+    this.dftPoints[this.tick] = idftCoeffs.pop()!;
     this.drawer.drawPoints(this.dftPoints);
 
     this.increaseTime();
     window.requestAnimationFrame(() => this.animate(dftCoeffs));
+  }
+
+  get nextTick(): number {
+    return (this.tick + 1) % this.points.length;
   }
 
 }

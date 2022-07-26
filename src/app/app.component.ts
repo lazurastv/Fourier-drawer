@@ -38,4 +38,8 @@ export class AppComponent {
     this.terms = parseInt(terms);
   }
 
+  get rendersPerTick(): number {
+    return this.speed === 0 ? 0 : 11 - this.speed;
+  }
+
 }
