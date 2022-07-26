@@ -13,14 +13,16 @@ export class GraphComponent implements OnChanges, AfterViewInit {
   @Input()
   reset: boolean = false;
   @Input()
-  terms?: number;
+  terms: number = 0;
   @Input()
   circles: boolean = false;
   @Input()
-  period: number = 1;
+  speed: number = 5;
 
   @Output()
   resetChange = new EventEmitter<boolean>();
+  @Output()
+  termsChange = new EventEmitter<number>();
 
   @ViewChild('canvas')
   canvas: ElementRef<HTMLCanvasElement> = {} as ElementRef;
@@ -28,6 +30,7 @@ export class GraphComponent implements OnChanges, AfterViewInit {
 
   drawing: boolean = false;
   points: ComplexNumber[] = [];
+  dftPoints: ComplexNumber[] = [];
   drawer: GraphOperations = {} as GraphOperations;
 
   time: number = 0;
@@ -43,6 +46,10 @@ export class GraphComponent implements OnChanges, AfterViewInit {
     if (prevReset === false && this.reset === true) {
       this.handleReset();
     }
+    const termsChange = changes['terms'];
+    if (termsChange?.firstChange === false) {
+      this.dftPoints = [];
+    }
   }
 
   handleMouseMove(event: MouseEvent) {
@@ -52,6 +59,7 @@ export class GraphComponent implements OnChanges, AfterViewInit {
   }
 
   handleMouseDown(event: MouseEvent) {
+    this.handleReset();
     this.resetChange.emit(false);
     this.addPoint(event);
     this.drawer.drawPoints(this.points);
@@ -67,48 +75,59 @@ export class GraphComponent implements OnChanges, AfterViewInit {
   }
 
   handleMouseUp() {
-    const dftCoeffs = dft(this.points);
-    this.animate(dftCoeffs);
-    this.disableDrawing();
+    this.drawing = false;
+    this.termsChange.emit(this.points.length);
+    this.animate(dft(this.points));
   }
 
   handleMouseLeave() {
-    this.disableDrawing();
+    this.drawing = false;
   }
 
-  disableDrawing() {
-    this.drawing = false;
+  logPan(e: HammerInput) {
+    console.log("PAN");
+    console.log(e.center.x, e.center.y);
+  }
+
+  logTouchstart(e: TouchEvent) {
+    console.log("Touch");
+    console.log(e);
   }
 
   handleReset() {
     this.points = [];
-    this.drawer.reset();
+    this.dftPoints = [];
   }
 
   increaseTime(): void {
     if (!this.prevTime) this.prevTime = Date.now();
+    if (this.speed === 0) {
+      this.prevTime = undefined;
+      return;
+    }
     const delta = Date.now() - this.prevTime;
-    const msPerPoint = 5000 * this.period / this.points.length;
-    const increase = Math.floor(delta / msPerPoint);
-    if (increase < 1) return;
+    const msPerPoint = 100 / this.speed;
+    if (delta < msPerPoint) return;
 
     this.prevTime = Date.now();
-    this.time += increase;
+    this.time += 1;
     this.time %= this.points.length;
   }
 
   animate(dftCoeffs: ComplexNumber[]) {
     this.drawer.reset();
-    this.drawer.drawPoints(this.points);
-    if (this.terms?.toString() === "") this.terms = undefined;
-    this.drawer.drawRadii(idft(dftCoeffs.slice(0, this.terms), this.time));
+    if (this.drawing || this.points.length === 0) return;
+
+    this.drawer.drawPoints(this.points, true);
+    const idftCoeffs = idft(dftCoeffs, this.time).slice(0, this.terms + 1);
+    this.drawer.drawRadii(idftCoeffs);
+
+    if (this.circles) this.drawer.drawCircles(idftCoeffs);
+
+    this.dftPoints[this.time] = idftCoeffs.pop()!;
+    this.drawer.drawPoints(this.dftPoints);
+
     this.increaseTime();
-
-    if (this.reset) {
-      this.handleReset();
-      return;
-    }
-
     window.requestAnimationFrame(() => this.animate(dftCoeffs));
   }
 

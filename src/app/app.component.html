@@ -1,12 +1,15 @@
 <main>
   <div class="container mt-5">
     <h3>Fourier drawer</h3>
-    <p>Draw a shape below, and a Fourier series will be calculated approximating it!</p>
+    <p>Draw a shape below, and a Discreet Fourier series will be calculated approximating it!</p>
   </div>
   <div class="container mb-5">
     <graph
+      [circles]="circles"
       [terms]="terms"
+      [speed]="speed"
       [(reset)]="reset"
+      (termsChange)="handleTermsChange($event)"
     ></graph>
     <div class="row align-items-center">
       <div class="col-auto">
@@ -19,20 +22,36 @@
         <label
           for="terms"
           class="form-label"
-        >Terms</label>
+        >Terms (max {{maxTerms}})</label>
         <input
           id="terms"
           class="form-control"
-          [(ngModel)]="terms"
+          (ngModelChange)="handleTermsInputChange($event)"
+          [(ngModel)]="termsInput"
         >
       </div>
       <div class="col-auto">
-        <label class="m-2">Lines</label>
+        <label
+          for="speed"
+          class="form-label"
+        >Szybkość animacji</label>
+        <input
+          id="speed"
+          class="form-range"
+          type="range"
+          min="0"
+          max="10"
+          step="0.1"
+          [(ngModel)]="speed"
+        >
+      </div>
+      <div class="col-auto">
         <div class="form-check form-check-inline form-switch">
           <input
             class="form-check-input"
             type="checkbox"
             role="switch"
+            [(ngModel)]="circles"
           >
           <label class="form-check-label">Circles</label>
         </div>

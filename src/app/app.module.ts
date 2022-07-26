@@ -1,6 +1,7 @@
 import { NgModule } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { BrowserModule } from '@angular/platform-browser';
+import { BrowserModule, HammerModule } from '@angular/platform-browser';
+import "hammerjs";
 
 import { AppComponent } from './app.component';
 import { GraphComponent } from './graph/graph.component';
@@ -12,7 +13,8 @@ import { GraphComponent } from './graph/graph.component';
   ],
   imports: [
     BrowserModule,
-    FormsModule
+    FormsModule,
+    HammerModule
   ],
   providers: [],
   bootstrap: [AppComponent]

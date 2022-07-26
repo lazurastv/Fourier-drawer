@@ -13,6 +13,10 @@ export default class ComplexNumber {
         return new ComplexNumber(re, im);
     }
 
+    subtract(cn: ComplexNumber) {
+        return this.add(cn.multiply(new ComplexNumber(-1, 0)));
+    }
+
     divide(scalar: number) {
         let re = this.re / scalar;
         let im = this.im / scalar;
@@ -23,6 +27,10 @@ export default class ComplexNumber {
         let re = this.re * cn.re - this.im * cn.im;
         let im = this.re * cn.im + this.im * cn.re;
         return new ComplexNumber(re, im);
+    }
+
+    magnitude() {
+        return Math.sqrt(this.re * this.re + this.im * this.im);
     }
 
     equals(cn: ComplexNumber) {

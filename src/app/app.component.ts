@@ -8,10 +8,28 @@ import { Component } from '@angular/core';
 export class AppComponent {
 
   reset: boolean = false;
-  terms?: number;
+  circles: boolean = false;
+  terms: number = 0;
+  speed: number = 5;
+
+  termsInput: string = "0";
+  maxTerms: number = 0;
 
   handleReset() {
     this.reset = true;
+    this.terms = 0;
+    this.termsInput = "0";
+    this.maxTerms = 0;
+  }
+
+  handleTermsChange(terms: number) {
+    this.terms = terms;
+    this.maxTerms = terms;
+    this.termsInput = terms.toString();
+  }
+
+  handleTermsInputChange(terms: string) {
+    this.terms = parseInt(terms);
   }
 
 }
