@@ -1,1 +1,11 @@
-<p>graph works!</p>
+<main>
+    <canvas
+        #canvas
+        width="500"
+        height="500"
+        (mouseup)="handleMouseUp()"
+        (mouseleave)="handleMouseLeave()"
+        (mousemove)="handleMouseMove($event)"
+        (mousedown)="handleMouseDown($event)"
+    ></canvas>
+</main>
