@@ -12,6 +12,12 @@ export class GraphComponent implements OnChanges, AfterViewInit {
 
   @Input()
   reset: boolean = false;
+  @Input()
+  terms?: number;
+  @Input()
+  circles: boolean = false;
+  @Input()
+  period: number = 1;
 
   @Output()
   resetChange = new EventEmitter<boolean>();
@@ -25,6 +31,7 @@ export class GraphComponent implements OnChanges, AfterViewInit {
   drawer: GraphOperations = {} as GraphOperations;
 
   time: number = 0;
+  prevTime?: number;
 
   ngAfterViewInit(): void {
     this.drawer = new GraphOperations(this.canvas.nativeElement);
@@ -32,7 +39,7 @@ export class GraphComponent implements OnChanges, AfterViewInit {
   }
 
   ngOnChanges(changes: SimpleChanges) {
-    const prevReset = changes['reset'].previousValue;
+    const prevReset = changes['reset']?.previousValue;
     if (prevReset === false && this.reset === true) {
       this.handleReset();
     }
@@ -53,14 +60,15 @@ export class GraphComponent implements OnChanges, AfterViewInit {
 
   addPoint(event: MouseEvent) {
     const rect = this.canvas.nativeElement.getBoundingClientRect();
-    const point = new ComplexNumber(event.clientX - rect.left, event.clientY - rect.top);
+    const point = new ComplexNumber(event.clientX - rect.left - this.drawer.width / 2, event.clientY - rect.top - this.drawer.height / 2);
     const prevPoint = this.points[this.points.length - 1];
 
     if (!prevPoint || !prevPoint.equals(point)) this.points.push(point);
   }
 
   handleMouseUp() {
-    this.drawer.drawPoints(this.points, true);
+    const dftCoeffs = dft(this.points);
+    this.animate(dftCoeffs);
     this.disableDrawing();
   }
 
@@ -77,9 +85,31 @@ export class GraphComponent implements OnChanges, AfterViewInit {
     this.drawer.reset();
   }
 
-  updateTime(): void {
-    this.time += 0.1;
-    this.time %= 15;
+  increaseTime(): void {
+    if (!this.prevTime) this.prevTime = Date.now();
+    const delta = Date.now() - this.prevTime;
+    const msPerPoint = 5000 * this.period / this.points.length;
+    const increase = Math.floor(delta / msPerPoint);
+    if (increase < 1) return;
+
+    this.prevTime = Date.now();
+    this.time += increase;
+    this.time %= this.points.length;
+  }
+
+  animate(dftCoeffs: ComplexNumber[]) {
+    this.drawer.reset();
+    this.drawer.drawPoints(this.points);
+    if (this.terms?.toString() === "") this.terms = undefined;
+    this.drawer.drawRadii(idft(dftCoeffs.slice(0, this.terms), this.time));
+    this.increaseTime();
+
+    if (this.reset) {
+      this.handleReset();
+      return;
+    }
+
+    window.requestAnimationFrame(() => this.animate(dftCoeffs));
   }
 
 }

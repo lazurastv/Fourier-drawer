@@ -8,6 +8,7 @@ import { Component } from '@angular/core';
 export class AppComponent {
 
   reset: boolean = false;
+  terms?: number;
 
   handleReset() {
     this.reset = true;

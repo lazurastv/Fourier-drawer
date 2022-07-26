@@ -4,7 +4,10 @@
     <p>Draw a shape below, and a Fourier series will be calculated approximating it!</p>
   </div>
   <div class="container mb-5">
-    <graph [(reset)]="reset"></graph>
+    <graph
+      [terms]="terms"
+      [(reset)]="reset"
+    ></graph>
     <div class="row align-items-center">
       <div class="col-auto">
         <button
@@ -20,6 +23,7 @@
         <input
           id="terms"
           class="form-control"
+          [(ngModel)]="terms"
         >
       </div>
       <div class="col-auto">
