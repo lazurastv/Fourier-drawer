@@ -13,6 +13,7 @@ export class AppComponent {
   speed: number = 5;
 
   termsInput: string = "";
+  termsError: boolean = false;
   maxTerms: number = 0;
 
   handleReset() {
@@ -29,12 +30,12 @@ export class AppComponent {
   handleTermsInputChange(terms: string) {
     if (terms === "") {
       this.terms = this.maxTerms;
+      this.termsError = false;
       return;
     }
+    this.termsError = !/^(0|[1-9][0-9]*)$/.test(terms);
+    if (this.termsError) return;
     this.terms = parseInt(terms);
-    if (this.terms === NaN) {
-      console.error("Wrong input");
-    }
   }
 
 }

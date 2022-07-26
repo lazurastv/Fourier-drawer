@@ -22,10 +22,12 @@
         <input
           id="terms"
           class="form-control"
+          [ngClass]="{ 'is-invalid': termsError }"
           placeholder="Terms (max {{maxTerms}})"
           (ngModelChange)="handleTermsInputChange($event)"
           [(ngModel)]="termsInput"
         >
+        <div *ngIf="termsError">Invalid term count.</div>
       </div>
       <div class="col-auto mt-3">
         <div class="form-check form-check-inline form-switch">

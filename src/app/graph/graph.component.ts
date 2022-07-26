@@ -66,11 +66,10 @@ export class GraphComponent implements OnChanges, AfterViewInit {
     this.drawer.drawPoints(this.points);
   }
 
-  handleMouseDown(event: MouseEvent) {
+  handleMouseDown() {
     if (this.drawing) return;
     this.handleReset();
     this.resetChange.emit(false);
-    this.addPoint(event);
     this.drawing = true;
   }
 
@@ -88,17 +87,8 @@ export class GraphComponent implements OnChanges, AfterViewInit {
     this.animate(dft(this.points));
   }
 
-  handleMouseLeave() {
-    this.drawing = false;
-  }
-
-  handlePanstart(e: HammerInput | Event) {
-    e = e as HammerInput;
-    const mouseEvent = {
-      clientX: e.center.x,
-      clientY: e.center.y
-    } as MouseEvent;
-    this.handleMouseDown(mouseEvent);
+  handlePanstart() {
+    this.handleMouseDown();
   }
 
   handlePan(e: HammerInput | Event) {
