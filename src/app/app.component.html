@@ -1,9 +1,9 @@
 <main>
-  <div class="container mt-5">
-    <h3>Fourier drawer</h3>
-    <p>Draw a shape below, and a Discreet Fourier series will be calculated approximating it!</p>
+  <div class="container mt-2">
+    <h3 class="text-center">Fourier drawer</h3>
+    <p class="text-center">Draw a shape below, and a Discreet Fourier series will be calculated approximating it!</p>
   </div>
-  <div class="container mb-5">
+  <div class="container mb-2">
     <graph
       [circles]="circles"
       [terms]="terms"
@@ -11,14 +11,14 @@
       [(reset)]="reset"
       (termsChange)="handleTermsChange($event)"
     ></graph>
-    <div class="row align-items-center">
+    <div class="row justify-content-center align-items-center">
       <div class="col-auto">
         <button
           class="btn btn-primary"
           (click)="handleReset()"
         >Reset</button>
       </div>
-      <div class="col-3">
+      <div class="col-8 col-sm-8 col-md-3">
         <label
           for="terms"
           class="form-label"
@@ -30,22 +30,7 @@
           [(ngModel)]="termsInput"
         >
       </div>
-      <div class="col-auto">
-        <label
-          for="speed"
-          class="form-label"
-        >Szybkość animacji</label>
-        <input
-          id="speed"
-          class="form-range"
-          type="range"
-          min="0"
-          max="10"
-          step="0.1"
-          [(ngModel)]="speed"
-        >
-      </div>
-      <div class="col-auto">
+      <div class="col-auto mt-3">
         <div class="form-check form-check-inline form-switch">
           <input
             class="form-check-input"
@@ -55,6 +40,21 @@
           >
           <label class="form-check-label">Circles</label>
         </div>
+      </div>
+      <div class="col-7 col-md-5 mt-3">
+        <label
+          for="speed"
+          class="form-label"
+        >Animation speed</label>
+        <input
+          id="speed"
+          class="form-range"
+          type="range"
+          min="0"
+          max="10"
+          step="0.1"
+          [(ngModel)]="speed"
+        >
       </div>
     </div>
   </div>

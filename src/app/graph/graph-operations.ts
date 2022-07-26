@@ -6,6 +6,7 @@ export class GraphOperations {
 
     constructor(canvas: HTMLCanvasElement) {
         this.canvas = canvas;
+        this.context.fillStyle = "white";
         this.context.lineCap = 'round';
         this.context.shadowColor = 'black';
         this.context.shadowBlur = 1;
@@ -30,7 +31,7 @@ export class GraphOperations {
     reset() {
         const context = this.context;
         this.defaultStyle();
-        context.clearRect(0, 0, this.width, this.height);
+        context.fillRect(0, 0, this.width, this.height);
         context.strokeRect(0, 0, this.width, this.height);
     }
 
