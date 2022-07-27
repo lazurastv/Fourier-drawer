@@ -24,7 +24,7 @@ export class GraphComponent implements OnChanges, AfterViewInit {
   @Output()
   resetChange = new EventEmitter<boolean>();
   @Output()
-  termsChange = new EventEmitter<number>();
+  maxTermsChange = new EventEmitter<number>();
 
   @ViewChild('canvas')
   canvas: ElementRef<HTMLCanvasElement> = {} as ElementRef;
@@ -38,6 +38,7 @@ export class GraphComponent implements OnChanges, AfterViewInit {
 
   render: number = 0;
   tick: number = 0;
+  startTick: number = 0;
   prevTime?: number;
 
   ngAfterViewInit(): void {
@@ -60,6 +61,7 @@ export class GraphComponent implements OnChanges, AfterViewInit {
     const termsChange = changes['terms'];
     if (termsChange?.firstChange === false) {
       this.dftPoints = [];
+      this.startTick = this.tick;
     }
     const rendersPerTickChange = changes['rendersPerTick'];
     if (rendersPerTickChange?.previousValue === 0) {
@@ -90,7 +92,7 @@ export class GraphComponent implements OnChanges, AfterViewInit {
 
   handleMouseUp() {
     this.drawing = false;
-    this.termsChange.emit(this.points.length);
+    this.maxTermsChange.emit(this.points.length);
     const dfts = dft(this.points);
     this.animate(dfts);
   }
@@ -117,6 +119,7 @@ export class GraphComponent implements OnChanges, AfterViewInit {
     this.dftPoints = [];
     this.render = 0;
     this.tick = 0;
+    this.startTick = 0;
     this.drawer.clear();
   }
 
@@ -142,8 +145,16 @@ export class GraphComponent implements OnChanges, AfterViewInit {
     this.drawer.drawRadii(idftCoeffs);
     if (this.circles) this.drawer.drawCircles(idftCoeffs);
 
-    this.dftPoints[this.tick] = idftCoeffs.pop()!;
+    const dftPoint = idftCoeffs.pop()!;
+    let pushed = false;
+
+    const edgeTicks = [0, this.points.length - 1];
+    if (!edgeTicks.includes(this.tick) || this.dftPoints[this.tick] === undefined) {
+      this.dftPoints[this.tick] = dftPoint;
+    }
+
     this.drawer.drawPoints(this.dftPoints);
+    if (pushed) this.dftPoints.pop();
 
     this.increaseTime();
     window.requestAnimationFrame(() => this.animate(dfts));

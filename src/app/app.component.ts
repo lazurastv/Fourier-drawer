@@ -24,9 +24,9 @@ export class AppComponent {
     this.termsInput = "";
   }
 
-  handleTermsChange(terms: number) {
-    this.terms = terms;
+  handleMaxTermsChange(terms: number) {
     this.maxTerms = terms;
+    if (this.termsInput === "") this.terms = terms;
   }
 
   handleTermsInputChange(terms: string) {
