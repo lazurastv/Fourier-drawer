@@ -145,17 +145,16 @@ export class GraphComponent implements OnChanges, AfterViewInit {
     this.drawer.drawRadii(idftCoeffs);
     if (this.circles) this.drawer.drawCircles(idftCoeffs);
 
-    const dftPoint = idftCoeffs.pop()!;
-    let pushed = false;
+    const finished =
+      this.dftPoints.length === this.points.length &&
+      !(this.dftPoints as (ComplexNumber | undefined)[]).includes(undefined);
 
     const edgeTicks = [0, this.points.length - 1];
-    if (!edgeTicks.includes(this.tick) || this.dftPoints[this.tick] === undefined) {
-      this.dftPoints[this.tick] = dftPoint;
+    if (!finished && (!edgeTicks.includes(this.tick) || this.dftPoints[this.tick] === undefined)) {
+      this.dftPoints[this.tick] = idftCoeffs.pop()!;
     }
 
     this.drawer.drawPoints(this.dftPoints);
-    if (pushed) this.dftPoints.pop();
-
     this.increaseTime();
     window.requestAnimationFrame(() => this.animate(dfts));
   }

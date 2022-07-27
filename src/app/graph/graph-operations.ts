@@ -13,14 +13,14 @@ export class GraphOperations {
 
     defaultStyle() {
         const context = this.context;
-        context.lineWidth = 2;
+        context.lineWidth = 3;
         context.strokeStyle = "black";
         context.fillStyle = "white";
     }
 
     backgroundStyle() {
         const context = this.context;
-        context.lineWidth = 2;
+        context.lineWidth = 3;
         context.strokeStyle = "gray";
     }
 
