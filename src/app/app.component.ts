@@ -20,6 +20,8 @@ export class AppComponent {
     this.reset = true;
     this.terms = 0;
     this.maxTerms = 0;
+    this.speed = 5;
+    this.termsInput = "";
   }
 
   handleTermsChange(terms: number) {

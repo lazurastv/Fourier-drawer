@@ -28,7 +28,7 @@ export class GraphOperations {
         this.context.lineWidth = 1;
     }
 
-    reset() {
+    clear() {
         const context = this.context;
         this.defaultStyle();
         context.fillRect(0, 0, this.width, this.height);

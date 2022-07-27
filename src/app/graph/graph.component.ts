@@ -1,7 +1,8 @@
 import { AfterViewInit, Component, ElementRef, EventEmitter, Input, OnChanges, Output, SimpleChanges, ViewChild } from '@angular/core';
 import { fromEvent } from 'rxjs';
 import ComplexNumber from './ft/complex-number';
-import { dft, idft } from './ft/dft';
+import { dft } from './ft/dft';
+import interpolateIdft from './ft/idft-interpolator';
 import { GraphOperations } from './graph-operations';
 
 @Component({
@@ -48,7 +49,7 @@ export class GraphComponent implements OnChanges, AfterViewInit {
   resizeEvent = () => {
     this.canvas.nativeElement.width = Math.min(window.innerWidth - 100, 800);
     this.canvas.nativeElement.height = 5 / 8 * this.canvas.nativeElement.width;
-    this.drawer.reset();
+    this.drawer.clear();
   }
 
   ngOnChanges(changes: SimpleChanges) {
@@ -90,7 +91,8 @@ export class GraphComponent implements OnChanges, AfterViewInit {
   handleMouseUp() {
     this.drawing = false;
     this.termsChange.emit(this.points.length);
-    this.animate(dft(this.points));
+    const dfts = dft(this.points);
+    this.animate(dfts);
   }
 
   handlePanstart() {
@@ -113,7 +115,9 @@ export class GraphComponent implements OnChanges, AfterViewInit {
   handleReset() {
     this.points = [];
     this.dftPoints = [];
+    this.render = 0;
     this.tick = 0;
+    this.drawer.clear();
   }
 
   increaseTime(): void {
@@ -128,23 +132,13 @@ export class GraphComponent implements OnChanges, AfterViewInit {
     this.tick = this.nextTick;
   }
 
-  animate(dftCoeffs: ComplexNumber[]) {
+  animate(dfts: ComplexNumber[]) {
     if (this.rendersPerTick === 0) return;
-    this.drawer.reset();
+    this.drawer.clear();
     if (this.drawing || this.points.length === 0) return;
 
     this.drawer.drawPoints(this.points, true);
-
-    const idftCoeffs = idft(dftCoeffs, this.tick).slice(0, this.terms + 1);
-    const nextIdftCoeffs = idft(dftCoeffs, this.nextTick).slice(0, this.terms + 1);
-    const currentWeight = new ComplexNumber(this.rendersPerTick - this.render);
-    const nextWeight = new ComplexNumber(this.render);
-    for (let i = 0; i < idftCoeffs.length; i++) {
-      const current = idftCoeffs[i].multiply(currentWeight);
-      const next = nextIdftCoeffs[i].multiply(nextWeight);
-      idftCoeffs[i] = current.add(next).divide(this.rendersPerTick);
-    }
-
+    const idftCoeffs = interpolateIdft(dfts, this.render, this.tick, this.rendersPerTick).slice(0, this.terms + 1);
     this.drawer.drawRadii(idftCoeffs);
     if (this.circles) this.drawer.drawCircles(idftCoeffs);
 
@@ -152,7 +146,7 @@ export class GraphComponent implements OnChanges, AfterViewInit {
     this.drawer.drawPoints(this.dftPoints);
 
     this.increaseTime();
-    window.requestAnimationFrame(() => this.animate(dftCoeffs));
+    window.requestAnimationFrame(() => this.animate(dfts));
   }
 
   get nextTick(): number {
