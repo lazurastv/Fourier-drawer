@@ -1,8 +1,7 @@
 import { AfterViewInit, Component, ElementRef, EventEmitter, Input, OnChanges, Output, SimpleChanges, ViewChild } from '@angular/core';
 import Complex from 'complex.js';
 import { fromEvent } from 'rxjs';
-import { dft } from './ft/dft';
-import interpolateIdft from './ft/idft-interpolator';
+import { ift } from './ft/ft';
 import { GraphOperations } from './graph-operations';
 
 @Component({
@@ -65,7 +64,7 @@ export class GraphComponent implements OnChanges, AfterViewInit {
     }
     const rendersPerTickChange = changes['rendersPerTick'];
     if (rendersPerTickChange?.previousValue === 0) {
-      this.animate(dft(this.points));
+      this.animate();
     }
   }
 
@@ -93,10 +92,7 @@ export class GraphComponent implements OnChanges, AfterViewInit {
   handleMouseUp() {
     this.drawing = false;
     this.maxTermsChange.emit(this.points.length);
-    const dfts = dft(this.points);
-    console.log(this.points);
-    console.log(dfts);
-    this.animate(dfts);
+    this.animate();
   }
 
   handlePanstart() {
@@ -137,15 +133,15 @@ export class GraphComponent implements OnChanges, AfterViewInit {
     this.tick = this.nextTick;
   }
 
-  animate(dfts: Complex[]) {
+  animate() {
     if (this.rendersPerTick === 0) return;
     this.drawer.clear();
     if (this.drawing || this.points.length === 0) return;
 
     this.drawer.drawPoints(this.points, true);
-    const idftCoeffs = interpolateIdft(dfts, this.render, this.tick, this.rendersPerTick).slice(0, this.terms + 1);
-    this.drawer.drawRadii(idftCoeffs);
-    if (this.circles) this.drawer.drawCircles(idftCoeffs);
+    const idftPoints = ift(this.tick / (this.points.length - 1), this.terms, this.points);
+    this.drawer.drawRadii(idftPoints);
+    if (this.circles) this.drawer.drawCircles(idftPoints);
 
     const finished =
       this.dftPoints.length === this.points.length &&
@@ -153,16 +149,16 @@ export class GraphComponent implements OnChanges, AfterViewInit {
 
     const edgeTicks = [0, this.points.length - 1];
     if (!finished && (!edgeTicks.includes(this.tick) || this.dftPoints[this.tick] === undefined)) {
-      this.dftPoints[this.tick] = idftCoeffs.pop()!;
+      this.dftPoints[this.tick] = idftPoints.pop()!;
     }
 
     this.drawer.drawPoints(this.dftPoints);
     this.increaseTime();
-    window.requestAnimationFrame(() => this.animate(dfts));
+    window.requestAnimationFrame(() => this.animate());
   }
 
   get nextTick(): number {
-    return (this.tick + 1) % this.points.length;
+    return (this.tick + 2) % this.points.length;
   }
 
 }
