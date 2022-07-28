@@ -10,8 +10,8 @@ export class AppComponent {
   reset: boolean = false;
   circles: boolean = false;
   terms: number = 0;
-  speed: number = 5;
 
+  speedInput: number = 50;
   termsInput: string = "";
   termsError: boolean = false;
   maxTerms: number = 0;
@@ -20,7 +20,7 @@ export class AppComponent {
     this.reset = true;
     this.terms = 0;
     this.maxTerms = 0;
-    this.speed = 5;
+    this.speedInput = 50;
     this.termsInput = "";
   }
 
@@ -40,8 +40,8 @@ export class AppComponent {
     this.terms = parseInt(terms);
   }
 
-  get rendersPerTick(): number {
-    return this.speed === 0 ? 0 : 11 - this.speed;
+  get speed(): number {
+    return this.speedInput / 100;
   }
 
 }

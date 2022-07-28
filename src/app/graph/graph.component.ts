@@ -18,7 +18,7 @@ export class GraphComponent implements OnChanges, AfterViewInit {
   @Input()
   circles: boolean = false;
   @Input()
-  rendersPerTick: number = 5;
+  speed: number = 0.5;
 
   @Output()
   resetChange = new EventEmitter<boolean>();
@@ -35,7 +35,6 @@ export class GraphComponent implements OnChanges, AfterViewInit {
   dftPoints: Complex[] = [];
   drawer: GraphOperations = {} as GraphOperations;
 
-  render: number = 0;
   tick: number = 0;
   startTick: number = 0;
   prevTime?: number;
@@ -62,8 +61,8 @@ export class GraphComponent implements OnChanges, AfterViewInit {
       this.dftPoints = [];
       this.startTick = this.tick;
     }
-    const rendersPerTickChange = changes['rendersPerTick'];
-    if (rendersPerTickChange?.previousValue === 0) {
+    const speed = changes['speed'];
+    if (speed?.previousValue === 0) {
       this.animate();
     }
   }
@@ -71,6 +70,7 @@ export class GraphComponent implements OnChanges, AfterViewInit {
   handleMouseMove(event: MouseEvent) {
     if (!this.drawing) return;
     this.addPoint(event);
+    this.drawer.clear();
     this.drawer.drawPoints(this.points);
   }
 
@@ -115,7 +115,6 @@ export class GraphComponent implements OnChanges, AfterViewInit {
   handleReset() {
     this.points = [];
     this.dftPoints = [];
-    this.render = 0;
     this.tick = 0;
     this.startTick = 0;
     this.drawer.clear();
@@ -124,41 +123,29 @@ export class GraphComponent implements OnChanges, AfterViewInit {
   increaseTime(): void {
     const delta = Date.now() - (this.prevTime ?? 0);
     if (delta < 1000 / GraphComponent.POINTS_PER_SECOND) return;
-
     this.prevTime = Date.now();
-
-    this.render += 1;
-    if (this.render < this.rendersPerTick) return;
-    this.render = 0;
     this.tick = this.nextTick;
   }
 
   animate() {
-    if (this.rendersPerTick === 0) return;
+    if (this.speed === 0) return;
     this.drawer.clear();
     if (this.drawing || this.points.length === 0) return;
 
     this.drawer.drawPoints(this.points, true);
-    const idftPoints = ift(this.tick / (this.points.length - 1), this.terms, this.points);
+    const idftPoints = ift(this.tick, this.terms, this.points);
     this.drawer.drawRadii(idftPoints);
     if (this.circles) this.drawer.drawCircles(idftPoints);
-
-    const finished =
-      this.dftPoints.length === this.points.length &&
-      !(this.dftPoints as (Complex | undefined)[]).includes(undefined);
-
-    const edgeTicks = [0, this.points.length - 1];
-    if (!finished && (!edgeTicks.includes(this.tick) || this.dftPoints[this.tick] === undefined)) {
-      this.dftPoints[this.tick] = idftPoints.pop()!;
-    }
-
+    this.dftPoints.push(idftPoints.pop()!);
     this.drawer.drawPoints(this.dftPoints);
+    console.log(this.dftPoints.length)  // fix this!
+
     this.increaseTime();
     window.requestAnimationFrame(() => this.animate());
   }
 
   get nextTick(): number {
-    return (this.tick + 2) % this.points.length;
+    return (this.tick + this.speed) % this.points.length;
   }
 
 }
