@@ -1,53 +1,45 @@
-import ComplexNumber from "./complex-number";
+import Complex from "complex.js";
 
 const CLOSE_TO_ZERO_THRESHOLD = 1e-10;
 
-export function dft(inputAmplitudes: ComplexNumber[]) {
+export function dft(inputAmplitudes: Complex[]) {
     const N = inputAmplitudes.length;
-    const signals: ComplexNumber[] = [];
+    const signals: Complex[] = [];
 
     for (let frequency = 0; frequency < N; frequency++) {
-        let frequencySignal = new ComplexNumber();
+        let frequencySignal = new Complex(0, 0);
 
         for (let timer = 0; timer < N; timer++) {
             const currentAmplitude = inputAmplitudes[timer];
             const rotationAngle = -1 * (2 * Math.PI) * frequency * (timer / N);
 
-            const dataPointContribution = new ComplexNumber(
-                Math.cos(rotationAngle),
-                Math.sin(rotationAngle),
-            ).multiply(currentAmplitude);
+            const dataPointContribution = new Complex({
+                abs: 1,
+                arg: rotationAngle
+            }).mul(currentAmplitude);
 
             frequencySignal = frequencySignal.add(dataPointContribution);
         }
 
-        if (Math.abs(frequencySignal.re) < CLOSE_TO_ZERO_THRESHOLD) {
-            frequencySignal.re = 0;
-        }
-
-        if (Math.abs(frequencySignal.im) < CLOSE_TO_ZERO_THRESHOLD) {
-            frequencySignal.im = 0;
-        }
-
-        frequencySignal = frequencySignal.divide(N);
+        frequencySignal = frequencySignal.div(N);
         signals[frequency] = frequencySignal;
     }
 
     return signals;
 }
 
-export function idft(signals: ComplexNumber[], timer: number) {
+export function idft(signals: Complex[], timer: number) {
     const N = signals.length;
-    const centers: ComplexNumber[] = [new ComplexNumber(0, 0)];
+    const centers: Complex[] = [new Complex(0)];
 
     for (let frequency = 0; frequency < N; frequency++) {
         const currentAmplitude = signals[frequency];
         const rotationAngle = (2 * Math.PI) * frequency * (timer / N);
 
-        const dataPointContribution = new ComplexNumber(
-            Math.cos(rotationAngle),
-            Math.sin(rotationAngle),
-        ).multiply(currentAmplitude);
+        const dataPointContribution = new Complex({
+            abs: 1,
+            arg: rotationAngle
+        }).mul(currentAmplitude);
 
         const center = centers[frequency].add(dataPointContribution);
         centers[frequency + 1] = center;

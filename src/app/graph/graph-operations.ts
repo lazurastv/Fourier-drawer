@@ -1,4 +1,4 @@
-import ComplexNumber from "./ft/complex-number";
+import Complex from "complex.js";
 
 export class GraphOperations {
     canvas: HTMLCanvasElement;
@@ -35,27 +35,27 @@ export class GraphOperations {
         context.strokeRect(0, 0, this.width, this.height);
     }
 
-    drawPoints(points: ComplexNumber[], asBackground: boolean = false) {
+    drawPoints(points: Complex[], asBackground: boolean = false) {
         this.defaultStyle();
         if (asBackground) this.backgroundStyle();
         this.drawShapes(points);
     }
 
-    drawRadii(centers: ComplexNumber[]) {
+    drawRadii(centers: Complex[]) {
         this.additionsStyle();
         this.drawShapes(centers, true);
     }
 
-    drawCircles(centers: ComplexNumber[]) {
+    drawCircles(centers: Complex[]) {
         this.additionsStyle();
         this.drawShapes(centers, true, true);
     }
 
-    drawShapes(points: ComplexNumber[], colorize: boolean = false, circles: boolean = false) {
+    drawShapes(points: Complex[], colorize: boolean = false, circles: boolean = false) {
         if (points.length < 2) return;
 
-        let prevPoint: ComplexNumber | undefined;
-        let curPoint: ComplexNumber | undefined;
+        let prevPoint: Complex | undefined;
+        let curPoint: Complex | undefined;
         let index = 0;
         for (const point of points) {
             if (!curPoint) {
@@ -69,7 +69,7 @@ export class GraphOperations {
                 index %= this.colors.length;
             }
             if (circles) {
-                this.drawCircle(prevPoint.re, prevPoint.im, curPoint.subtract(prevPoint).magnitude());
+                this.drawCircle(prevPoint.re, prevPoint.im, curPoint.sub(prevPoint).abs());
                 continue;
             }
             this.drawLine(prevPoint, curPoint);
@@ -84,7 +84,7 @@ export class GraphOperations {
         context.closePath();
     }
 
-    drawLine(prevPos?: ComplexNumber, curPos?: ComplexNumber) {
+    drawLine(prevPos?: Complex, curPos?: Complex) {
         if (!prevPos || !curPos) return;
 
         const context = this.context;

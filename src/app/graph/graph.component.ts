@@ -1,6 +1,6 @@
 import { AfterViewInit, Component, ElementRef, EventEmitter, Input, OnChanges, Output, SimpleChanges, ViewChild } from '@angular/core';
+import Complex from 'complex.js';
 import { fromEvent } from 'rxjs';
-import ComplexNumber from './ft/complex-number';
 import { dft } from './ft/dft';
 import interpolateIdft from './ft/idft-interpolator';
 import { GraphOperations } from './graph-operations';
@@ -32,8 +32,8 @@ export class GraphComponent implements OnChanges, AfterViewInit {
   static readonly POINTS_PER_SECOND = 120;
 
   drawing: boolean = false;
-  points: ComplexNumber[] = [];
-  dftPoints: ComplexNumber[] = [];
+  points: Complex[] = [];
+  dftPoints: Complex[] = [];
   drawer: GraphOperations = {} as GraphOperations;
 
   render: number = 0;
@@ -84,7 +84,7 @@ export class GraphComponent implements OnChanges, AfterViewInit {
 
   addPoint(event: MouseEvent) {
     const rect = this.canvas.nativeElement.getBoundingClientRect();
-    const point = new ComplexNumber(event.clientX - rect.left - this.drawer.width / 2, event.clientY - rect.top - this.drawer.height / 2);
+    const point = new Complex(event.clientX - rect.left - this.drawer.width / 2, event.clientY - rect.top - this.drawer.height / 2);
     const prevPoint = this.points[this.points.length - 1];
 
     if (!prevPoint || !prevPoint.equals(point)) this.points.push(point);
@@ -94,6 +94,8 @@ export class GraphComponent implements OnChanges, AfterViewInit {
     this.drawing = false;
     this.maxTermsChange.emit(this.points.length);
     const dfts = dft(this.points);
+    console.log(this.points);
+    console.log(dfts);
     this.animate(dfts);
   }
 
@@ -135,7 +137,7 @@ export class GraphComponent implements OnChanges, AfterViewInit {
     this.tick = this.nextTick;
   }
 
-  animate(dfts: ComplexNumber[]) {
+  animate(dfts: Complex[]) {
     if (this.rendersPerTick === 0) return;
     this.drawer.clear();
     if (this.drawing || this.points.length === 0) return;
@@ -147,7 +149,7 @@ export class GraphComponent implements OnChanges, AfterViewInit {
 
     const finished =
       this.dftPoints.length === this.points.length &&
-      !(this.dftPoints as (ComplexNumber | undefined)[]).includes(undefined);
+      !(this.dftPoints as (Complex | undefined)[]).includes(undefined);
 
     const edgeTicks = [0, this.points.length - 1];
     if (!finished && (!edgeTicks.includes(this.tick) || this.dftPoints[this.tick] === undefined)) {
