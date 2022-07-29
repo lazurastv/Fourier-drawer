@@ -1,8 +1,10 @@
 import Complex from "complex.js";
+import CircleDrawer from "./shapes/circle-drawer";
+import ColorLineDrawer from "./shapes/color-line-drawer";
+import LineDrawer from "./shapes/line-drawer";
 
 export class GraphOperations {
     canvas: HTMLCanvasElement;
-    colors: string[] = ['blue', 'red', 'green'];
 
     constructor(canvas: HTMLCanvasElement) {
         this.canvas = canvas;
@@ -11,69 +13,31 @@ export class GraphOperations {
         this.context.shadowBlur = 1;
     }
 
-    defaultStyle() {
-        const context = this.context;
-        context.lineWidth = 3;
-        context.strokeStyle = "black";
-        context.fillStyle = "white";
-    }
-
-    backgroundStyle() {
-        const context = this.context;
-        context.lineWidth = 3;
-        context.strokeStyle = "gray";
-    }
-
-    additionsStyle() {
-        this.context.lineWidth = 1;
+    setStrokeColor(color: string) {
+        this.context.strokeStyle = color;
     }
 
     clear() {
         const context = this.context;
-        this.defaultStyle();
+        context.lineWidth = 3;
+        context.fillStyle = "white";
         context.fillRect(0, 0, this.width, this.height);
         context.strokeRect(0, 0, this.width, this.height);
     }
 
     drawPoints(points: Complex[], asBackground: boolean = false) {
-        this.defaultStyle();
-        if (asBackground) this.backgroundStyle();
-        this.drawShapes(points);
+        this.context.lineWidth = 3;
+        new LineDrawer(this).withDefaultColor(asBackground ? 'gray' : 'black').draw(points);
     }
 
     drawRadii(centers: Complex[]) {
-        this.additionsStyle();
-        this.drawShapes(centers, true);
+        this.context.lineWidth = 1;
+        new ColorLineDrawer(this).draw(centers);
     }
 
     drawCircles(centers: Complex[]) {
-        this.additionsStyle();
-        this.drawShapes(centers, true, true);
-    }
-
-    drawShapes(points: Complex[], colorize: boolean = false, circles: boolean = false) {
-        if (points.length < 2) return;
-
-        let prevPoint: Complex | undefined;
-        let curPoint: Complex | undefined;
-        let index = 0;
-        for (const point of points) {
-            if (!curPoint) {
-                curPoint = point;
-                continue;
-            }
-            prevPoint = curPoint;
-            curPoint = point;
-            if (colorize) {
-                this.context.strokeStyle = this.colors[index++];
-                index %= this.colors.length;
-            }
-            if (circles) {
-                this.drawCircle(prevPoint.re, prevPoint.im, curPoint.sub(prevPoint).abs());
-                continue;
-            }
-            this.drawLine(prevPoint, curPoint);
-        }
+        this.context.lineWidth = 1;
+        new CircleDrawer(this).draw(centers);
     }
 
     drawCircle(x: number, y: number, r: number): void {
