@@ -24,15 +24,26 @@ export function ft(frequency: number, inputAmplitudes: Complex[]) {
     return coeff.div(inputAmplitudes.length);
 }
 
-export function ift(time: number, terms: number, inputAmplitudes: Complex[]) {
-    time = time / (inputAmplitudes.length - 1);
+export function fts(frequencies: number, inputAmplitudes: Complex[]) {
+    const coeffs = [];
+    for (let i = 0; i < frequencies; i++) {
+        const frequency = getFrequency(i);
+        coeffs.push(ft(frequency, inputAmplitudes));
+    }
+    return coeffs;
+}
+
+export function ift(time: number, fts: Complex[]) {
     let steps: Complex[] = [Complex(0)];
-    for (let i = 0; i < terms; i++) {
+    for (const [key, term] of Object.entries(fts)) {
+        const i = parseInt(key);
         const current = steps[i];
-        const trueIndex = Math.floor((i + 1) / 2);
-        const frequency = i % 2 === 0 ? -trueIndex : trueIndex;
-        const term = ft(frequency, inputAmplitudes);
+        const frequency = getFrequency(i);
         steps.push(current.add(term.mul(new Complex({ abs: 1, arg: 2 * Math.PI * frequency * time }))));
     }
     return steps;
+}
+
+function getFrequency(n: number): number {
+    return (n % 2 === 0 ? -1 : 1) * Math.ceil(n / 2);
 }

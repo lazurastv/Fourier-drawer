@@ -1,7 +1,7 @@
 import { AfterViewInit, Component, ElementRef, EventEmitter, Input, OnChanges, Output, SimpleChanges, ViewChild } from '@angular/core';
 import Complex from 'complex.js';
 import { fromEvent } from 'rxjs';
-import { ift } from './ft/ft';
+import { fts, ift } from './ft/ft';
 import { GraphOperations } from './graph-operations';
 
 @Component({
@@ -32,7 +32,8 @@ export class GraphComponent implements OnChanges, AfterViewInit {
 
   drawing: boolean = false;
   points: Complex[] = [];
-  dftPoints: Complex[] = [];
+  ftCoeffs: Complex[] = [];
+  ftPoints: Complex[] = [];
   drawer: GraphOperations = {} as GraphOperations;
 
   tick: number = 0;
@@ -59,7 +60,8 @@ export class GraphComponent implements OnChanges, AfterViewInit {
     }
     const termsChange = changes['terms'];
     if (termsChange?.firstChange === false) {
-      this.dftPoints = [];
+      this.ftPoints = [];
+      this.ftCoeffs = fts(this.terms, this.points);
       this.startTick = undefined;
       this.loadFinished = false;
     }
@@ -94,6 +96,7 @@ export class GraphComponent implements OnChanges, AfterViewInit {
   handleMouseUp() {
     this.drawing = false;
     this.maxTermsChange.emit(this.points.length);
+    this.ftCoeffs = fts(this.terms, this.points);
     this.animate();
   }
 
@@ -116,11 +119,11 @@ export class GraphComponent implements OnChanges, AfterViewInit {
 
   handleReset() {
     this.points = [];
-    this.dftPoints = [];
+    this.ftPoints = [];
+    this.ftCoeffs = [];
     this.tick = 0;
     this.startTick = undefined;
     this.loadFinished = false;
-    this.drawer.clear();
   }
 
   increaseTime(): void {
@@ -136,11 +139,11 @@ export class GraphComponent implements OnChanges, AfterViewInit {
     if (this.drawing || this.points.length === 0) return;
 
     this.drawer.drawPoints(this.points, true);
-    const idftPoints = ift(this.tick, this.terms, this.points);
+    const idftPoints = ift(this.tick / this.points.length, this.ftCoeffs);
     this.drawer.drawRadii(idftPoints);
     if (this.circles) this.drawer.drawCircles(idftPoints);
-    if (!this.loadFinished) this.dftPoints.push(idftPoints.pop()!);
-    this.drawer.drawPoints(this.dftPoints);
+    if (!this.loadFinished) this.ftPoints.push(idftPoints.pop()!);
+    this.drawer.drawPoints(this.ftPoints);
 
     this.startTick ??= this.tick;
     this.loadFinished = this.loadFinished || this.tick < this.startTick && (this.nextTick >= this.startTick || this.tick > this.nextTick);
