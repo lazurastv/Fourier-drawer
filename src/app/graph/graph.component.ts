@@ -145,7 +145,6 @@ export class GraphComponent implements OnChanges, AfterViewInit {
   increaseTime(): void {
     const delta = Date.now() - (this.prevTime ?? 0);
     if (delta < 1000 / this.POINTS_PER_SECOND) return;
-    if (this.tick < 1) console.log(Date.now() - this.prevTime!, this.tick, this.points.length, this.ftPoints.length);
     this.prevTime = Date.now();
     this.tick = this.nextTick;
   }
@@ -160,6 +159,8 @@ export class GraphComponent implements OnChanges, AfterViewInit {
     this.drawer.drawRadii(idftPoints);
     if (this.circles) this.drawer.drawCircles(idftPoints);
     this.ftPoints[Math.floor(this.tick)] = idftPoints.pop()!;
+
+    if (this.nextTick >= 1) this.ftPoints[this.points.length] ??= this.ftPoints[0];
     this.drawer.drawPoints(this.ftPoints);
     this.increaseTime();
     window.requestAnimationFrame(() => this.animate());
@@ -167,7 +168,7 @@ export class GraphComponent implements OnChanges, AfterViewInit {
 
   get nextTick(): number {
     let next = this.tick + this.speed;
-    if (next > this.points.length) next = 0;
+    if (next >= this.points.length) next = 0;
     return next;
   }
 
