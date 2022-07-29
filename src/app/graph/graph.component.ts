@@ -61,7 +61,7 @@ export class GraphComponent implements OnChanges, AfterViewInit {
     const termsChange = changes['terms'];
     if (termsChange?.firstChange === false) {
       this.ftPoints = [];
-      this.ftCoeffs = fts(this.terms, this.points);
+      this.ftCoeffs = this.newFtCoeffs;
       this.startTick = undefined;
       this.loadFinished = false;
     }
@@ -96,7 +96,7 @@ export class GraphComponent implements OnChanges, AfterViewInit {
   handleMouseUp() {
     this.drawing = false;
     this.maxTermsChange.emit(this.points.length);
-    this.ftCoeffs = fts(this.terms, this.points);
+    this.ftCoeffs = this.newFtCoeffs;
     this.animate();
   }
 
@@ -153,6 +153,12 @@ export class GraphComponent implements OnChanges, AfterViewInit {
 
   get nextTick(): number {
     return (this.tick + this.speed) % this.points.length;
+  }
+
+  get newFtCoeffs(): Complex[] {
+    const res = fts(this.terms, this.points);
+    console.log(res);
+    return res;
   }
 
 }
