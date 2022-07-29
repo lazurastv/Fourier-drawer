@@ -35,8 +35,6 @@ export class GraphComponent implements OnChanges, AfterViewInit {
   drawer: GraphOperations = {} as GraphOperations;
 
   tick: number = 0;
-  startTick?: number;
-  loadFinished: boolean = false;
   prevTime?: number;
 
   ngAfterViewInit(): void {
@@ -60,10 +58,9 @@ export class GraphComponent implements OnChanges, AfterViewInit {
     if (termsChange?.firstChange === false) {
       this.ftPoints = [];
       this.ftCoeffs = this.newFtCoeffs;
-      this.startTick = undefined;
-      this.loadFinished = false;
     }
     const speed = changes['speed'];
+    this.tick = this.tick - this.tick % this.speed;
     if (speed?.previousValue === 0) {
       this.animate();
     }
@@ -74,6 +71,7 @@ export class GraphComponent implements OnChanges, AfterViewInit {
     this.addPoint(event);
     this.drawer.clear();
     this.drawer.drawPoints(this.points);
+    this.drawer.drawLine(this.points[0], this.points[this.points.length - 1]);
   }
 
   handleMouseDown() {
@@ -91,8 +89,23 @@ export class GraphComponent implements OnChanges, AfterViewInit {
     if (!prevPoint || !prevPoint.equals(point)) this.points.push(point);
   }
 
+  connectEdgePoints() {
+    const first = this.points[0];
+    const last = this.points[this.points.length - 1];
+    if (last === undefined) return;
+    let delta = first.sub(last);
+    delta = delta.div(delta.abs()).mul(10);
+    let current = last.add(delta);
+    while (last.sub(first).abs() > last.sub(current).abs()) {
+      this.points.push(current);
+      current = current.add(delta);
+    }
+    this.points.push(first);
+  }
+
   handleMouseUp() {
     this.drawing = false;
+    this.connectEdgePoints();
     this.ftCoeffs = this.newFtCoeffs;
     this.animate();
   }
@@ -119,13 +132,12 @@ export class GraphComponent implements OnChanges, AfterViewInit {
     this.ftPoints = [];
     this.ftCoeffs = [];
     this.tick = 0;
-    this.startTick = undefined;
-    this.loadFinished = false;
   }
 
   increaseTime(): void {
     const delta = Date.now() - (this.prevTime ?? 0);
     if (delta < 1000 / this.POINTS_PER_SECOND) return;
+    if (this.tick < 1) console.log(Date.now() - this.prevTime!, this.tick, this.points.length, this.ftPoints.length);
     this.prevTime = Date.now();
     this.tick = this.nextTick;
   }
@@ -139,17 +151,17 @@ export class GraphComponent implements OnChanges, AfterViewInit {
     const idftPoints = ift(this.tick / this.points.length, this.ftCoeffs);
     this.drawer.drawRadii(idftPoints);
     if (this.circles) this.drawer.drawCircles(idftPoints);
-    if (!this.loadFinished) this.ftPoints.push(idftPoints.pop()!);
+    this.ftPoints[Math.floor(this.tick)] = idftPoints.pop()!;
     this.drawer.drawPoints(this.ftPoints);
 
-    this.startTick ??= this.tick;
-    this.loadFinished = this.loadFinished || this.tick < this.startTick && (this.nextTick >= this.startTick || this.tick > this.nextTick);
     this.increaseTime();
     window.requestAnimationFrame(() => this.animate());
   }
 
   get nextTick(): number {
-    return (this.tick + this.speed) % this.points.length;
+    let next = this.tick + this.speed;
+    if (next > this.points.length) next = 0;
+    return next;
   }
 
   get newFtCoeffs(): Complex[] {
