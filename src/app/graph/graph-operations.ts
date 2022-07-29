@@ -25,6 +25,10 @@ export class GraphOperations {
         context.strokeRect(0, 0, this.width, this.height);
     }
 
+    close(points: Complex[]) {
+        this.drawLine(points[0], points[points.length - 1]);
+    }
+
     drawPoints(points: Complex[], asBackground: boolean = false) {
         this.context.lineWidth = 3;
         new LineDrawer(this).withDefaultColor(asBackground ? 'gray' : 'black').draw(points);

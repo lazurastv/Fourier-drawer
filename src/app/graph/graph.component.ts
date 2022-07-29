@@ -71,7 +71,7 @@ export class GraphComponent implements OnChanges, AfterViewInit {
     this.addPoint(event);
     this.drawer.clear();
     this.drawer.drawPoints(this.points);
-    this.drawer.drawLine(this.points[0], this.points[this.points.length - 1]);
+    this.drawer.close(this.points);
   }
 
   handleMouseDown() {
@@ -93,8 +93,16 @@ export class GraphComponent implements OnChanges, AfterViewInit {
     const first = this.points[0];
     const last = this.points[this.points.length - 1];
     if (last === undefined) return;
+
+    let pathLength = 0;
+    for (let i = 1; i < this.points.length; i++) {
+      pathLength += this.points[i].sub(this.points[i - 1]).abs();
+    }
+    const pointsPerLength = this.points.length / pathLength;
+
     let delta = first.sub(last);
-    delta = delta.div(delta.abs()).mul(10);
+    delta = delta.div(delta.abs() * pointsPerLength);
+
     let current = last.add(delta);
     while (last.sub(first).abs() > last.sub(current).abs()) {
       this.points.push(current);
@@ -153,7 +161,6 @@ export class GraphComponent implements OnChanges, AfterViewInit {
     if (this.circles) this.drawer.drawCircles(idftPoints);
     this.ftPoints[Math.floor(this.tick)] = idftPoints.pop()!;
     this.drawer.drawPoints(this.ftPoints);
-
     this.increaseTime();
     window.requestAnimationFrame(() => this.animate());
   }
