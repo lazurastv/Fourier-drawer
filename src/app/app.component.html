@@ -1,7 +1,7 @@
 <main>
   <div class="container mt-5">
     <h1 class="text-center">Fourier drawer</h1>
-    <p class="text-center">Draw a shape below, and a Discreet Fourier series will be calculated approximating it!</p>
+    <p class="text-center">Draw a shape below, and a Fourier series will be calculated approximating it!</p>
   </div>
   <div class="container">
     <graph
@@ -9,7 +9,6 @@
       [terms]="terms"
       [speed]="speed"
       [(reset)]="reset"
-      (maxTermsChange)="handleMaxTermsChange($event)"
     ></graph>
     <div class="row justify-content-center align-items-center">
       <div class="col-auto mt-3">
@@ -23,7 +22,7 @@
           id="terms"
           class="form-control"
           [ngClass]="{ 'is-invalid': termsError }"
-          placeholder="Terms (max {{maxTerms}})"
+          placeholder="Terms (default {{DEFAULT_TERMS}})"
           (ngModelChange)="handleTermsInputChange($event)"
           [(ngModel)]="termsInput"
         >

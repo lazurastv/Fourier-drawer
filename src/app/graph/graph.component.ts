@@ -14,7 +14,7 @@ export class GraphComponent implements OnChanges, AfterViewInit {
   @Input()
   reset: boolean = false;
   @Input()
-  terms: number = 0;
+  terms: number = 50;
   @Input()
   circles: boolean = false;
   @Input()
@@ -22,13 +22,11 @@ export class GraphComponent implements OnChanges, AfterViewInit {
 
   @Output()
   resetChange = new EventEmitter<boolean>();
-  @Output()
-  maxTermsChange = new EventEmitter<number>();
 
   @ViewChild('canvas')
   canvas: ElementRef<HTMLCanvasElement> = {} as ElementRef;
 
-  static readonly POINTS_PER_SECOND = 120;
+  readonly POINTS_PER_SECOND = 120;
 
   drawing: boolean = false;
   points: Complex[] = [];
@@ -95,7 +93,6 @@ export class GraphComponent implements OnChanges, AfterViewInit {
 
   handleMouseUp() {
     this.drawing = false;
-    this.maxTermsChange.emit(this.points.length);
     this.ftCoeffs = this.newFtCoeffs;
     this.animate();
   }
@@ -128,7 +125,7 @@ export class GraphComponent implements OnChanges, AfterViewInit {
 
   increaseTime(): void {
     const delta = Date.now() - (this.prevTime ?? 0);
-    if (delta < 1000 / GraphComponent.POINTS_PER_SECOND) return;
+    if (delta < 1000 / this.POINTS_PER_SECOND) return;
     this.prevTime = Date.now();
     this.tick = this.nextTick;
   }
@@ -156,9 +153,7 @@ export class GraphComponent implements OnChanges, AfterViewInit {
   }
 
   get newFtCoeffs(): Complex[] {
-    const res = fts(this.terms, this.points);
-    console.log(res);
-    return res;
+    return fts(this.terms, this.points);
   }
 
 }
