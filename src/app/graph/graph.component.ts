@@ -36,7 +36,8 @@ export class GraphComponent implements OnChanges, AfterViewInit {
   drawer: GraphOperations = {} as GraphOperations;
 
   tick: number = 0;
-  startTick: number = 0;
+  startTick?: number;
+  loadFinished: boolean = false;
   prevTime?: number;
 
   ngAfterViewInit(): void {
@@ -59,7 +60,8 @@ export class GraphComponent implements OnChanges, AfterViewInit {
     const termsChange = changes['terms'];
     if (termsChange?.firstChange === false) {
       this.dftPoints = [];
-      this.startTick = this.tick;
+      this.startTick = undefined;
+      this.loadFinished = false;
     }
     const speed = changes['speed'];
     if (speed?.previousValue === 0) {
@@ -116,7 +118,8 @@ export class GraphComponent implements OnChanges, AfterViewInit {
     this.points = [];
     this.dftPoints = [];
     this.tick = 0;
-    this.startTick = 0;
+    this.startTick = undefined;
+    this.loadFinished = false;
     this.drawer.clear();
   }
 
@@ -136,10 +139,11 @@ export class GraphComponent implements OnChanges, AfterViewInit {
     const idftPoints = ift(this.tick, this.terms, this.points);
     this.drawer.drawRadii(idftPoints);
     if (this.circles) this.drawer.drawCircles(idftPoints);
-    this.dftPoints.push(idftPoints.pop()!);
+    if (!this.loadFinished) this.dftPoints.push(idftPoints.pop()!);
     this.drawer.drawPoints(this.dftPoints);
-    console.log(this.dftPoints.length)  // fix this!
 
+    this.startTick ??= this.tick;
+    this.loadFinished = this.loadFinished || this.tick < this.startTick && (this.nextTick >= this.startTick || this.tick > this.nextTick);
     this.increaseTime();
     window.requestAnimationFrame(() => this.animate());
   }
