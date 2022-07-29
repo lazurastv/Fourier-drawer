@@ -26,7 +26,7 @@
           (ngModelChange)="handleTermsInputChange($event)"
           [(ngModel)]="termsInput"
         >
-        <div *ngIf="termsError">Invalid term count.</div>
+        <div *ngIf="termsError">{{termsError}}</div>
       </div>
       <div class="col-auto mt-3">
         <div class="form-check form-check-inline form-switch">

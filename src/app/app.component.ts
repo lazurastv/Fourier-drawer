@@ -14,7 +14,7 @@ export class AppComponent {
 
   speedInput: number = 50;
   termsInput: string = "";
-  termsError: boolean = false;
+  termsError: string = "";
 
   constructor() {
     this.terms = this.DEFAULT_TERMS;
@@ -27,15 +27,19 @@ export class AppComponent {
     this.termsInput = "";
   }
 
-  handleTermsInputChange(terms: string) {
-    if (terms === "") {
+  handleTermsInputChange(termsString: string) {
+    if (termsString === "") {
       this.terms = this.DEFAULT_TERMS;
-      this.termsError = false;
+      this.termsError = "";
       return;
     }
-    this.termsError = !/^(0|[1-9][0-9]*)$/.test(terms);
-    if (this.termsError) return;
-    this.terms = parseInt(terms);
+
+    if (!/^(0|[1-9][0-9]*)$/.test(termsString)) {
+      this.termsError = "Invalid terms count";
+      return;
+    }
+
+    this.terms = Math.min(parseInt(termsString), 1000);
   }
 
   get speed(): number {
