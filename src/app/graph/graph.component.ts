@@ -60,8 +60,8 @@ export class GraphComponent implements OnChanges, AfterViewInit {
       this.ftCoeffs = this.newFtCoeffs;
     }
     const speed = changes['speed'];
-    this.tick = this.tick - this.tick % this.speed;
     if (speed?.previousValue === 0) {
+      this.tick = this.tick - this.tick % this.speed;
       this.animate();
     }
   }
@@ -160,7 +160,7 @@ export class GraphComponent implements OnChanges, AfterViewInit {
     if (this.circles) this.drawer.drawCircles(idftPoints);
     this.ftPoints[Math.floor(this.tick)] = idftPoints.pop()!;
 
-    if (this.nextTick >= 1) this.ftPoints[this.points.length] ??= this.ftPoints[0];
+    this.ftPoints[this.points.length] = this.ftPoints[0];
     this.drawer.drawPoints(this.ftPoints);
     this.increaseTime();
     window.requestAnimationFrame(() => this.animate());
