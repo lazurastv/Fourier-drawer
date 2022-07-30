@@ -16,7 +16,7 @@
           (click)="handleReset()"
         >Reset</button>
       </div>
-      <div class="col-8 col-sm-8 col-md-3 mt-3">
+      <div class="col-md-3 col-sm-8 mt-3">
         <input
           id="terms"
           class="form-control"
@@ -78,24 +78,21 @@
     >
       <table>
         <thead>
-          <th>Index</th>
+          <th>Frequency</th>
           <th>Length</th>
           <th>Starting angle</th>
-          <th>Rotations / cycle</th>
         </thead>
         <tbody>
           <tr *ngFor="let coeff of graph.ftCoeffs; let i = index">
-            <td>{{i + 1}}</td>
+            <td>{{getFrequency(i)}}</td>
             <td>{{getMagnitude(coeff)}}</td>
             <td>{{getAngle(coeff)}}&#176;</td>
-            <td>{{getFrequency(i)}}</td>
           </tr>
         </tbody>
       </table>
     </div>
     <div class="row justify-content-center mt-3">
       <iframe
-        class="col"
         src="https://www.youtube.com/embed/r6sGWTCMz2k"
         title="YouTube video player"
         frameborder="0"

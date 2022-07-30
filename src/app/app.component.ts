@@ -49,16 +49,16 @@ export class AppComponent {
     this.terms = Math.min(parseInt(termsString), 1000);
   }
 
+  getFrequency(index: number) {
+    return getFrequency(index);
+  }
+
   getMagnitude(cn: Complex) {
-    return Math.round(cn.abs() * 100) / 100;
+    return cn.abs().toExponential(2);
   }
 
   getAngle(cn: Complex) {
     return Math.round(cn.arg() * 180 / Math.PI * 100) / 100;
-  }
-
-  getFrequency(index: number) {
-    return getFrequency(index);
   }
 
   get speed(): number {
