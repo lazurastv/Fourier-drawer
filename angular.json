@@ -32,7 +32,7 @@
             ],
             "styles": [
               "src/styles.sass",
-              "node_modules/bootstrap/scss/bootstrap.scss"
+              "bootstrap/scss/bootstrap.scss"
             ],
             "scripts": []
           },

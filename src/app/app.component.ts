@@ -1,4 +1,7 @@
-import { Component } from '@angular/core';
+import { Component, ViewChild } from '@angular/core';
+import Complex from 'complex.js';
+import { getFrequency } from './graph/ft/ft';
+import { GraphComponent } from './graph/graph.component';
 
 @Component({
   selector: 'app-root',
@@ -6,6 +9,9 @@ import { Component } from '@angular/core';
   styleUrls: ['./app.component.sass']
 })
 export class AppComponent {
+  @ViewChild('graph')
+  graph!: GraphComponent;
+
   readonly DEFAULT_TERMS = 50;
 
   reset: boolean = false;
@@ -14,6 +20,7 @@ export class AppComponent {
 
   speedInput: number = 50;
   termsInput: string = "";
+  vectorDataVisible: boolean = false;
   termsError: string = "";
 
   constructor() {
@@ -40,6 +47,18 @@ export class AppComponent {
     }
 
     this.terms = Math.min(parseInt(termsString), 1000);
+  }
+
+  getMagnitude(cn: Complex) {
+    return Math.round(cn.abs() * 100) / 100;
+  }
+
+  getAngle(cn: Complex) {
+    return Math.round(cn.arg() * 180 / Math.PI * 100) / 100;
+  }
+
+  getFrequency(index: number) {
+    return getFrequency(index);
   }
 
   get speed(): number {

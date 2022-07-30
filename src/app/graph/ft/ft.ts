@@ -47,6 +47,6 @@ export function ift(time: number, fts: Complex[]) {
     return steps;
 }
 
-function getFrequency(n: number): number {
+export function getFrequency(n: number): number {
     return (n % 2 === 0 ? -1 : 1) * Math.ceil(n / 2);
 }

@@ -1,3 +1,24 @@
+@import "src/styles"
+
 h1
     font-size: 3rem
     font-family: 'Brush Script MT', cursive
+
+.ft-table
+    max-height: 500px
+    overflow-y: scroll
+
+thead
+    top: 0
+    position: sticky
+    background-color: $background-color
+
+.arrow
+    transition-duration: 0.35s
+    transition-property: transform
+
+.arrow--open
+    transform: rotate(90deg)
+
+.arrow--close
+    transform: rotate(0deg)

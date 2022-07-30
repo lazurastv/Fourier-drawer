@@ -3,6 +3,7 @@
     <h1 class="text-center">Fourier drawer</h1>
     <p class="text-center">Draw a shape below, and a Fourier series will be calculated approximating it!</p>
     <graph
+      #graph
       [circles]="circles"
       [terms]="terms"
       [speed]="speed"
@@ -53,7 +54,46 @@
         >
       </div>
     </div>
-    <div class="row justify-content-center">
+    <button
+      class="btn btn-primary col-12 d-flex mt-3"
+      (click)="vectorDataVisible = !vectorDataVisible"
+    >
+      <label class="flex-grow-1">Vector data</label>
+      <svg
+        class="arrow"
+        [ngClass]="{ 'arrow--open': vectorDataVisible, 'arrow--close': !vectorDataVisible }"
+        style="width:24px;height:24px"
+        viewBox="0 0 24 24"
+      >
+        <path
+          fill="currentColor"
+          d="M5.5,4.14L4.5,5.86L15,12L4.5,18.14L5.5,19.86L19,12L5.5,4.14Z"
+        />
+      </svg>
+    </button>
+    <div
+      id="ftTable"
+      class="ft-table collapsing"
+      [ngStyle]="{'height': vectorDataVisible ? '500px' : '0px'}"
+    >
+      <table>
+        <thead>
+          <th>Index</th>
+          <th>Length</th>
+          <th>Starting angle</th>
+          <th>Rotations / cycle</th>
+        </thead>
+        <tbody>
+          <tr *ngFor="let coeff of graph.ftCoeffs; let i = index">
+            <td>{{i + 1}}</td>
+            <td>{{getMagnitude(coeff)}}</td>
+            <td>{{getAngle(coeff)}}&#176;</td>
+            <td>{{getFrequency(i)}}</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="row justify-content-center mt-3">
       <iframe
         class="col"
         src="https://www.youtube.com/embed/r6sGWTCMz2k"

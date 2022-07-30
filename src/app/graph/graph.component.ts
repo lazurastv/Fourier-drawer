@@ -10,7 +10,6 @@ import { GraphOperations } from './graph-operations';
   styleUrls: ['./graph.component.sass']
 })
 export class GraphComponent implements OnChanges, AfterViewInit {
-
   @Input()
   reset: boolean = false;
   @Input()
@@ -24,7 +23,7 @@ export class GraphComponent implements OnChanges, AfterViewInit {
   resetChange = new EventEmitter<boolean>();
 
   @ViewChild('canvas')
-  canvas: ElementRef<HTMLCanvasElement> = {} as ElementRef;
+  canvas!: ElementRef<HTMLCanvasElement>;
 
   readonly POINTS_PER_SECOND = 120;
 
@@ -32,7 +31,7 @@ export class GraphComponent implements OnChanges, AfterViewInit {
   points: Complex[] = [];
   ftCoeffs: Complex[] = [];
   ftPoints: Complex[] = [];
-  drawer: GraphOperations = {} as GraphOperations;
+  drawer!: GraphOperations;
 
   tick: number = 0;
   prevTime?: number;
@@ -160,7 +159,8 @@ export class GraphComponent implements OnChanges, AfterViewInit {
     if (this.circles) this.drawer.drawCircles(idftPoints);
     this.ftPoints[Math.floor(this.tick)] = idftPoints.pop()!;
 
-    this.ftPoints[this.points.length] = this.ftPoints[0];
+    this.ftPoints[this.points.length] ??= this.ftPoints[0];
+    this.ftPoints[this.points.length + 1] = this.ftPoints[0];
     this.drawer.drawPoints(this.ftPoints);
     this.increaseTime();
     window.requestAnimationFrame(() => this.animate());
@@ -175,5 +175,4 @@ export class GraphComponent implements OnChanges, AfterViewInit {
   get newFtCoeffs(): Complex[] {
     return fts(this.terms, this.points);
   }
-
 }
