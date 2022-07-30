@@ -18,11 +18,8 @@ export class GraphOperations {
     }
 
     clear() {
-        const context = this.context;
-        context.lineWidth = 3;
-        context.fillStyle = "white";
-        context.fillRect(0, 0, this.width, this.height);
-        context.strokeRect(0, 0, this.width, this.height);
+        this.context.fillStyle = "white";
+        this.context.fillRect(0, 0, this.width, this.height);
     }
 
     close(points: Complex[]) {

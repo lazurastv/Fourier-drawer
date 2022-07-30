@@ -64,4 +64,8 @@ export class AppComponent {
   get speed(): number {
     return this.speedInput / 100;
   }
+
+  get dropdownEnabled(): boolean {
+    return this.graph.ftCoeffs.length > 0;
+  }
 }

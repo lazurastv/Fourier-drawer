@@ -1,103 +1,143 @@
-<main>
-  <div class="container justify-content-center my-5 px-5">
-    <h1 class="text-center">Fourier drawer</h1>
-    <p class="text-center">Draw a shape below, and a Fourier series will be calculated approximating it!</p>
-    <graph
-      #graph
-      [circles]="circles"
-      [terms]="terms"
-      [speed]="speed"
-      [(reset)]="reset"
-    ></graph>
-    <div class="row justify-content-center align-items-center">
-      <div class="col-auto mt-3">
-        <button
-          class="btn btn-primary"
-          (click)="handleReset()"
-        >Reset</button>
-      </div>
-      <div class="col-8 col-md-3 col-sm-3 mt-3">
-        <input
-          id="terms"
-          class="form-control"
-          [ngClass]="{ 'is-invalid': termsError }"
-          placeholder="Terms (default {{DEFAULT_TERMS}})"
-          (ngModelChange)="handleTermsInputChange($event)"
-          [(ngModel)]="termsInput"
-        >
-        <div *ngIf="termsError">{{termsError}}</div>
-      </div>
-      <div class="col-auto mt-3">
-        <div class="form-check form-check-inline form-switch">
-          <input
-            class="form-check-input"
-            type="checkbox"
-            role="switch"
-            [(ngModel)]="circles"
-          >
-          <label class="form-check-label">Circles</label>
-        </div>
-      </div>
-      <div class="col-7 col-md-5 col-sm-3 mt-3">
-        <label class="form-label">Animation speed</label>
-        <input
-          class="form-range"
-          type="range"
-          min="0"
-          max="100"
-          step="1"
-          [(ngModel)]="speedInput"
-        >
-      </div>
+<main class="container justify-content-center my-5 px-5">
+  <h1 class="text-center">Fourier drawer</h1>
+  <p class="text-center">Draw a shape below, and a Fourier series will be calculated approximating it!</p>
+  <graph
+    #graph
+    [circles]="circles"
+    [terms]="terms"
+    [speed]="speed"
+    [(reset)]="reset"
+  ></graph>
+  <div class="row justify-content-center align-items-center">
+    <div class="col-auto mt-3">
+      <button
+        class="btn btn-primary"
+        (click)="handleReset()"
+      >Reset</button>
     </div>
-    <button
-      class="btn btn-primary col-12 d-flex mt-3"
-      (click)="vectorDataVisible = !vectorDataVisible"
-    >
-      <label class="flex-grow-1">Vector data</label>
-      <svg
-        class="arrow"
-        [ngClass]="{ 'arrow--open': vectorDataVisible, 'arrow--close': !vectorDataVisible }"
-        style="width:24px;height:24px"
-        viewBox="0 0 24 24"
+    <div class="col-8 col-md-3 col-sm-3 mt-3">
+      <input
+        id="terms"
+        class="form-control"
+        [ngClass]="{ 'is-invalid': termsError }"
+        placeholder="Terms (default {{DEFAULT_TERMS}})"
+        (ngModelChange)="handleTermsInputChange($event)"
+        [(ngModel)]="termsInput"
       >
-        <path
-          fill="currentColor"
-          d="M5.5,4.14L4.5,5.86L15,12L4.5,18.14L5.5,19.86L19,12L5.5,4.14Z"
-        />
-      </svg>
-    </button>
-    <div
-      id="ftTable"
-      class="ft-table collapsing mt-3"
-      [ngStyle]="{'height': vectorDataVisible ? '500px' : '0px'}"
-    >
-      <table class="table table-striped">
-        <thead>
-          <tr>
-            <th>Frequency</th>
-            <th>Length</th>
-            <th>Starting angle</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr *ngFor="let coeff of graph.ftCoeffs; let i = index">
-            <td>{{getFrequency(i)}}</td>
-            <td>{{getMagnitude(coeff)}}</td>
-            <td>{{getAngle(coeff)}}&#176;</td>
-          </tr>
-        </tbody>
-      </table>
+      <div *ngIf="termsError">{{termsError}}</div>
     </div>
-    <div class="row justify-content-center mt-3">
-      <iframe
-        src="https://www.youtube.com/embed/r6sGWTCMz2k"
-        title="YouTube video player"
-        frameborder="0"
-        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-        allowfullscreen
-      ></iframe>
-      <p class="col text-center">This is a great resource on the topic!</p>
+    <div class="col-auto mt-3">
+      <div class="form-check form-check-inline form-switch">
+        <input
+          class="form-check-input"
+          type="checkbox"
+          role="switch"
+          [(ngModel)]="circles"
+        >
+        <label class="form-check-label">Circles</label>
+      </div>
+    </div>
+    <div class="col-7 col-md-5 col-sm-3 mt-3">
+      <label class="form-label">Animation speed</label>
+      <input
+        class="form-range"
+        type="range"
+        min="0"
+        max="100"
+        step="1"
+        [(ngModel)]="speedInput"
+      >
     </div>
   </div>
+  <button
+    class="btn btn-primary col-12 d-flex mt-3"
+    (click)="vectorDataVisible = dropdownEnabled && !vectorDataVisible"
+  >
+    <label class="flex-grow-1">Vector data</label>
+    <svg
+      class="arrow"
+      [ngClass]="{ 'arrow--open': vectorDataVisible, 'arrow--close': !vectorDataVisible }"
+      style="width:24px;height:24px"
+      viewBox="0 0 24 24"
+    >
+      <path
+        fill="currentColor"
+        d="M5.5,4.14L4.5,5.86L15,12L4.5,18.14L5.5,19.86L19,12L5.5,4.14Z"
+      />
+    </svg>
+  </button>
+  <section
+    id="ftTable"
+    class="ft-table collapsing mt-3"
+    [ngStyle]="{'height': vectorDataVisible ? '500px' : '0px'}"
+  >
+    <table class="table table-striped">
+      <thead>
+        <tr>
+          <th>Frequency</th>
+          <th>Length</th>
+          <th>Starting angle</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let coeff of graph.ftCoeffs; let i = index">
+          <td>{{getFrequency(i)}}</td>
+          <td>{{getMagnitude(coeff)}}</td>
+          <td>{{getAngle(coeff)}}&#176;</td>
+        </tr>
+      </tbody>
+    </table>
+  </section>
+  <article class="row justify-content-center mt-3">
+    <p>
+      What you are seeing is the power of the Fourier transform used on a set of points provided by your mouse input.
+      It turns out that any shape can be drawn using a sufficiently large amount of vectors rotating at different
+      speeds.
+      By tweaking the length of every vector and the angle at which it starts rotating, we can trace out our desired
+      drawing.
+      The only question is: how do find these parameters?
+    </p>
+    <p>
+      That is where the Fourier transform comes into play. Using the formula below we can calculate the starting
+      conditions for a vector with frequency &#x3be;.
+    </p>
+    <img
+      src="assets/formula.svg"
+      height="70"
+    >
+    <p>
+      Normally an infinite integral would be quite the headache, but in the case of this app the function we are trying
+      to draw is defined in a given range (on the canvas), and assumed to be zero everywhere else.
+    </p>
+    <p>
+      The output of our function will be a complex number. The magnitude of this number is the length of our vector, and
+      its argument is the starting angle. A common choice for used frequencies are natural numbers and their
+      corresponding opposites.
+    </p>
+    <p>
+      If you would like to learn more about the math involved in this, check out this video by
+      3blue1brown. It provides a nice, intuitive explanation.
+    </p>
+    <iframe
+      class="mb-3"
+      src="https://www.youtube.com/embed/r6sGWTCMz2k"
+      title="YouTube video player"
+      frameborder="0"
+      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+      allowfullscreen
+    ></iframe>
+    <p>
+      Usually these kinds of visualizations use a Discrete Fourier transform to calculate the parameters of each vector.
+      This would be very inefficient however for this example, because of a feature that is easy to dismiss as trivial.
+      The speed slider. The speed slider could work in two ways
+    </p>
+    <ul class="px-5">
+      <li>
+        Interpolate between the given datapoints and grab points in a uniform distribution, then recalculate the FFT
+      </li>
+      <li>
+        Use the real FT on the combination of interpolations of pairs of points.
+      </li>
+    </ul>
+  </article>
 </main>
