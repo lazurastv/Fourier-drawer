@@ -1,9 +1,7 @@
 <main>
-  <div class="container mt-5">
+  <div class="container justify-content-center mt-5">
     <h1 class="text-center">Fourier drawer</h1>
     <p class="text-center">Draw a shape below, and a Fourier series will be calculated approximating it!</p>
-  </div>
-  <div class="container">
     <graph
       [circles]="circles"
       [terms]="terms"
@@ -56,17 +54,15 @@
       </div>
     </div>
     <div class="row justify-content-center">
-      <div class="col-6">
-        <iframe
-          width="560"
-          height="315"
-          src="https://www.youtube.com/embed/r6sGWTCMz2k"
-          title="YouTube video player"
-          frameborder="0"
-          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-          allowfullscreen
-        ></iframe>
-      </div>
+      <iframe
+        class="col"
+        src="https://www.youtube.com/embed/r6sGWTCMz2k"
+        title="YouTube video player"
+        frameborder="0"
+        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+        allowfullscreen
+      ></iframe>
+      <p class="col text-center">This is a great resource on the topic!</p>
     </div>
   </div>
 </main>
