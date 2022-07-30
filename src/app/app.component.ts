@@ -32,6 +32,7 @@ export class AppComponent {
     this.terms = this.DEFAULT_TERMS;
     this.speedInput = 50;
     this.termsInput = "";
+    this.vectorDataVisible = false;
   }
 
   handleTermsInputChange(termsString: string) {
@@ -54,11 +55,21 @@ export class AppComponent {
   }
 
   getMagnitude(cn: Complex) {
-    return cn.abs().toExponential(2);
+    const mag = cn.abs().toExponential(2).split('e');
+    let exponent = '';
+    for (const char of mag[1]) {
+      if (char === '+') continue;
+      if (char === '-') {
+        exponent += '⁻'
+        continue;
+      }
+      exponent += '⁰¹²³⁴⁵⁶⁷⁸⁹'[parseInt(char)];
+    }
+    return mag[0] + '·10' + exponent;
   }
 
   getAngle(cn: Complex) {
-    return Math.round(cn.arg() * 180 / Math.PI * 100) / 100;
+    return (cn.arg() * 180 / Math.PI).toFixed(2);
   }
 
   get speed(): number {
@@ -67,5 +78,9 @@ export class AppComponent {
 
   get dropdownEnabled(): boolean {
     return this.graph.ftCoeffs.length > 0;
+  }
+
+  get viewwidth(): number {
+    return window.innerWidth;
   }
 }
