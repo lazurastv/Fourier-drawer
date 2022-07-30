@@ -1,4 +1,4 @@
-import { Component, ViewChild } from '@angular/core';
+import { Component, ElementRef, ViewChild } from '@angular/core';
 import Complex from 'complex.js';
 import { getFrequency } from './graph/ft/ft';
 import { GraphComponent } from './graph/graph.component';
@@ -11,6 +11,9 @@ import { GraphComponent } from './graph/graph.component';
 export class AppComponent {
   @ViewChild('graph')
   graph!: GraphComponent;
+
+  @ViewChild('ftTable')
+  collapsible!: ElementRef<HTMLDivElement>;
 
   readonly DEFAULT_TERMS = 50;
   readonly DEFAULT_SPEED = 50;
@@ -49,6 +52,11 @@ export class AppComponent {
     }
 
     this.terms = Math.min(parseInt(termsString), 1000);
+  }
+
+  toggleVectorData() {
+    this.vectorDataVisible = this.dropdownEnabled && !this.vectorDataVisible
+    this.collapsible.nativeElement.style.maxHeight = this.vectorDataVisible ? '400px' : '0px';
   }
 
   getFrequency(index: number) {

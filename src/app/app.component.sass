@@ -8,10 +8,13 @@ h1
 .controls
     max-width: 800px
 
+.collapsible
+    max-height: 0px
+    transition: max-height .5s ease
+
 .ft-table
     width: 100%
     max-width: 800px
-    max-height: 400px
     overflow-y: scroll
     overflow-x: scroll
 
@@ -21,7 +24,7 @@ thead
     background-color: $background-color
 
 .arrow
-    transition-duration: 0.35s
+    transition-duration: .5s
     transition-property: transform
 
 .arrow--open
