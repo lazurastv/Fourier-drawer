@@ -13,6 +13,7 @@ export class AppComponent {
   graph!: GraphComponent;
 
   readonly DEFAULT_TERMS = 50;
+  readonly DEFAULT_SPEED = 50;
 
   reset: boolean = false;
   circles: boolean = false;
@@ -21,7 +22,7 @@ export class AppComponent {
   speedInput: number = 50;
   termsInput: string = "";
   vectorDataVisible: boolean = false;
-  termsError: string = "";
+  termsError: boolean = false;
 
   constructor() {
     this.terms = this.DEFAULT_TERMS;
@@ -30,7 +31,7 @@ export class AppComponent {
   handleReset() {
     this.reset = true;
     this.terms = this.DEFAULT_TERMS;
-    this.speedInput = 50;
+    this.speedInput = this.DEFAULT_SPEED;
     this.termsInput = "";
     this.vectorDataVisible = false;
   }
@@ -38,12 +39,12 @@ export class AppComponent {
   handleTermsInputChange(termsString: string) {
     if (termsString === "") {
       this.terms = this.DEFAULT_TERMS;
-      this.termsError = "";
+      this.termsError = false;
       return;
     }
 
     if (!/^(0|[1-9][0-9]*)$/.test(termsString)) {
-      this.termsError = "Invalid terms count";
+      this.termsError = true;
       return;
     }
 
@@ -73,7 +74,8 @@ export class AppComponent {
   }
 
   get speed(): number {
-    return this.speedInput / 100;
+    if (this.speedInput === 0) return 0;
+    return Math.pow(2, this.speedInput / 15 - 5);
   }
 
   get dropdownEnabled(): boolean {
