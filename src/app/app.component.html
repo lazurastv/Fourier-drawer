@@ -9,26 +9,26 @@
     [(reset)]="reset"
   ></graph>
   <div class="d-flex justify-content-center">
-    <div class="controls row justify-content-center align-items-center">
-      <div class="col-auto mt-3">
+    <div class="d-flex controls row">
+      <div class="col-12 col-sm-6 d-flex mt-3 align-items-end">
         <button
-          class="btn btn-primary"
+          class="simple-control btn btn-primary form-check-inline"
           (click)="handleReset()"
         >Reset</button>
+        <div class="d-flex flex-column flex-grow-1">
+          <label class="form-label text-center">Terms</label>
+          <input
+            id="terms"
+            class="form-control"
+            [ngClass]="{ 'is-invalid': termsError }"
+            (ngModelChange)="handleTermsInputChange($event)"
+            [(ngModel)]="termsInput"
+          >
+          <div *ngIf="termsError">{{termsError}}</div>
+        </div>
       </div>
-      <div class="col-8 col-md-3 col-sm-3 mt-3">
-        <input
-          id="terms"
-          class="form-control"
-          [ngClass]="{ 'is-invalid': termsError }"
-          placeholder="Terms (default {{DEFAULT_TERMS}})"
-          (ngModelChange)="handleTermsInputChange($event)"
-          [(ngModel)]="termsInput"
-        >
-        <div *ngIf="termsError">{{termsError}}</div>
-      </div>
-      <div class="col-auto mt-3">
-        <div class="form-check form-check-inline form-switch">
+      <div class="col-12 col-sm-6 d-flex mt-3 align-items-end">
+        <div class="simple-control form-check form-check-inline form-switch">
           <input
             class="form-check-input"
             type="checkbox"
@@ -37,17 +37,17 @@
           >
           <label class="form-check-label">Circles</label>
         </div>
-      </div>
-      <div class="col-7 col-md-5 col-sm-3 mt-3">
-        <label class="form-label">Animation speed</label>
-        <input
-          class="form-range"
-          type="range"
-          min="0"
-          max="200"
-          step="1"
-          [(ngModel)]="speedInput"
-        >
+        <div class="d-flex flex-column flex-grow-1">
+          <label class="form-label text-center">Speed</label>
+          <input
+            class="form-range"
+            type="range"
+            min="0"
+            max="200"
+            step="1"
+            [(ngModel)]="speedInput"
+          >
+        </div>
       </div>
     </div>
   </div>
@@ -74,7 +74,7 @@
     <section
       id="ftTable"
       class="ft-table collapsing mt-3"
-      [ngClass]="{ 'ft-table--open': vectorDataVisible }"
+      [ngStyle]="{ 'height': vectorDataVisible ? (graph.ftCoeffs.length + 1) * 41 + 16 + 'px' : '0px' }"
     >
       <table class="table table-striped">
         <thead>
