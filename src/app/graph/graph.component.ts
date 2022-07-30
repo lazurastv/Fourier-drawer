@@ -55,12 +55,11 @@ export class GraphComponent implements OnChanges, AfterViewInit {
     }
     const termsChange = changes['terms'];
     if (termsChange?.firstChange === false) {
-      this.ftPoints = [];
       this.ftCoeffs = this.newFtCoeffs;
+      this.calculatePoints();
     }
     const speed = changes['speed'];
     if (speed?.previousValue === 0) {
-      this.tick = this.tick - this.tick % this.speed;
       this.animate();
     }
   }
@@ -114,6 +113,7 @@ export class GraphComponent implements OnChanges, AfterViewInit {
     this.drawing = false;
     this.connectEdgePoints();
     this.ftCoeffs = this.newFtCoeffs;
+    this.calculatePoints();
     this.animate();
   }
 
@@ -154,22 +154,27 @@ export class GraphComponent implements OnChanges, AfterViewInit {
     if (this.drawing || this.points.length === 0) return;
 
     this.drawer.drawPoints(this.points, true);
+    this.drawer.drawPoints(this.ftPoints);
+
     const idftPoints = ift(this.tick / this.points.length, this.ftCoeffs);
     this.drawer.drawRadii(idftPoints);
     if (this.circles) this.drawer.drawCircles(idftPoints);
-    this.ftPoints[Math.floor(this.tick)] = idftPoints.pop()!;
 
-    this.ftPoints[this.points.length] ??= this.ftPoints[0];
-    this.ftPoints[this.points.length + 1] = this.ftPoints[0];
-    this.drawer.drawPoints(this.ftPoints);
     this.increaseTime();
     window.requestAnimationFrame(() => this.animate());
   }
 
+  calculatePoints() {
+    this.ftPoints = [];
+    for (let i = 0; i < this.points.length; i++) {
+      const ftPoint = ift(i / this.points.length, this.ftCoeffs).pop()!;
+      this.ftPoints.push(ftPoint);
+    }
+    this.ftPoints.push(this.ftPoints[0]);
+  }
+
   get nextTick(): number {
-    let next = this.tick + this.speed;
-    if (next >= this.points.length) next = 0;
-    return next;
+    return (this.tick + this.speed) % this.points.length;
   }
 
   get newFtCoeffs(): Complex[] {

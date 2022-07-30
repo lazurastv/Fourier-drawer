@@ -43,7 +43,7 @@
         class="form-range"
         type="range"
         min="0"
-        max="100"
+        max="200"
         step="1"
         [(ngModel)]="speedInput"
       >
@@ -126,18 +126,5 @@
       allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
       allowfullscreen
     ></iframe>
-    <p>
-      Usually these kinds of visualizations use a Discrete Fourier transform to calculate the parameters of each vector.
-      This would be very inefficient however for this example, because of a feature that is easy to dismiss as trivial.
-      The speed slider. The speed slider could work in two ways
-    </p>
-    <ul class="px-5">
-      <li>
-        Interpolate between the given datapoints and grab points in a uniform distribution, then recalculate the FFT
-      </li>
-      <li>
-        Use the real FT on the combination of interpolations of pairs of points.
-      </li>
-    </ul>
   </article>
 </main>
