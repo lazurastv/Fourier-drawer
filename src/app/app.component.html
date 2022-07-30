@@ -1,5 +1,5 @@
 <main>
-  <div class="container justify-content-center mt-5">
+  <div class="container justify-content-center my-5 px-5">
     <h1 class="text-center">Fourier drawer</h1>
     <p class="text-center">Draw a shape below, and a Fourier series will be calculated approximating it!</p>
     <graph
@@ -39,12 +39,8 @@
         </div>
       </div>
       <div class="col-7 col-md-5 col-sm-3 mt-3">
-        <label
-          for="speed"
-          class="form-label"
-        >Animation speed</label>
+        <label class="form-label">Animation speed</label>
         <input
-          id="speed"
           class="form-range"
           type="range"
           min="0"
@@ -73,14 +69,16 @@
     </button>
     <div
       id="ftTable"
-      class="ft-table collapsing"
+      class="ft-table collapsing mt-3"
       [ngStyle]="{'height': vectorDataVisible ? '500px' : '0px'}"
     >
-      <table>
+      <table class="table table-striped">
         <thead>
-          <th>Frequency</th>
-          <th>Length</th>
-          <th>Starting angle</th>
+          <tr>
+            <th>Frequency</th>
+            <th>Length</th>
+            <th>Starting angle</th>
+          </tr>
         </thead>
         <tbody>
           <tr *ngFor="let coeff of graph.ftCoeffs; let i = index">
