@@ -8,41 +8,47 @@
     [speed]="speed"
     [(reset)]="reset"
   ></graph>
-  <div class="row d-flex justify-content-between align-items-end mt-3">
-    <button
-      class="col-3 simple-control btn btn-primary px-0 text-center"
-      (click)="handleReset()"
-    >Reset</button>
-    <div class="col-3 d-flex flex-column">
-      <label class="form-label text-center">Terms</label>
-      <input
-        id="terms"
-        class="form-control text-center"
-        placeholder="50"
-        [ngClass]="{ 'is-invalid': termsError }"
-        (ngModelChange)="handleTermsInputChange($event)"
-        [(ngModel)]="termsInput"
-      >
+  <div class="row w-100 align-items-end mt-2">
+    <div class="col-12 col-sm-auto d-flex justify-content-center align-items-end mt-2">
+      <button
+        class="col-auto btn btn-primary reset-button text-center"
+        (click)="handleReset()"
+      >Reset</button>
+      <div class="col-auto d-flex flex-column align-items-center mx-3">
+        <div class="text-center">Terms</div>
+        <input
+          id="terms"
+          class="form-control terms-input text-center"
+          placeholder="50"
+          [ngClass]="{ 'is-invalid': termsError }"
+          (ngModelChange)="handleTermsInputChange($event)"
+          [(ngModel)]="termsInput"
+        >
+      </div>
+      <div class="col-auto d-flex flex-column justify-content-center switch-container">
+        <div class="text-center">Circles</div>
+        <div class="d-flex justify-content-center align-items-center circle-switch form-switch">
+          <input
+            class="form-check-input"
+            type="checkbox"
+            role="switch"
+            [(ngModel)]="circles"
+          >
+        </div>
+      </div>
     </div>
-    <div class="col-3 form-check form-switch justify-content-center">
-      <input
-        class="form-check-input"
-        type="checkbox"
-        role="switch"
-        [(ngModel)]="circles"
-      >
-      <label class="form-check-label">Circles</label>
-    </div>
-    <div class="row mt-3">
-      <label class="form-label text-center">Speed</label>
-      <input
-        class="form-range"
-        type="range"
-        min="0"
-        max="100"
-        step="1"
-        [(ngModel)]="speedInput"
-      >
+    <div class="col flex-column mt-2">
+      <div class="text-center">Speed</div>
+      <div class="d-flex speed-slider align-items-center">
+        <input
+          class="form-range"
+          type="range"
+          min="0"
+          max="100"
+          step="1"
+          [(ngModel)]="speedInput"
+        >
+      </div>
     </div>
   </div>
   <button

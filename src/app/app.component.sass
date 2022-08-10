@@ -1,6 +1,7 @@
 @import "src/styles"
 
 main
+    max-width: 800px
     font-family: Roboto, sans-serif
 
 h1
@@ -9,14 +10,18 @@ h1
 
 graph
     width: 100%
-    max-width: 800px
     aspect-ratio: calc(8 / 5)
     overflow: hidden
     box-shadow: 0px 2px 5px
 
-.ft-table-button,
-.controls
-    max-width: 800px
+.terms-input
+    max-width: 100px
+
+.terms-input,
+.reset-button,
+.circle-switch,
+.speed-slider
+    height: 38px
 
 .collapsible
     max-height: 0px
@@ -26,7 +31,7 @@ graph
     width: 100%
     max-width: 800px
     overflow-y: scroll
-    overflow-x: scroll
+    overflow-x: auto
 
 thead
     top: 0
