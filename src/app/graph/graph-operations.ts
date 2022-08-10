@@ -11,6 +11,7 @@ export class GraphOperations {
         this.context.lineCap = 'round';
         this.context.shadowColor = 'black';
         this.context.shadowBlur = 1;
+        this.clear();
     }
 
     setStrokeColor(color: string) {

@@ -1,11 +1,11 @@
-<main class="d-flex justify-content-center">
-    <canvas
-        #canvas
-        (mousedown)="handleMouseDown()"
-        (mousemove)="handleMouseMove($event)"
-        (mouseup)="handleMouseUp()"
-        (panstart)="handlePanstart()"
-        (pan)="handlePan($event)"
-        (panend)="handlePanend()"
-    ></canvas>
-</main>
+<canvas
+    #canvas
+    width="800"
+    height="500"
+    (mousedown)="handleMouseDown()"
+    (mousemove)="handleMouseMove($event)"
+    (mouseup)="handleMouseUp()"
+    (panstart)="handlePanstart()"
+    (pan)="handlePan($event)"
+    (panend)="handlePanend()"
+></canvas>
