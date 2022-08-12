@@ -1,6 +1,6 @@
 <main class="container d-flex flex-column align-items-center my-2">
   <h1 class="text-center">Fourier drawer</h1>
-  <p class="text-center hint">Draw a shape below, and a Fourier series will be calculated approximating it!</p>
+  <p class="text-center">Draw a shape below, and a Fourier series will be calculated approximating it!</p>
   <graph
     #graph
     [circles]="circles"
@@ -104,7 +104,7 @@
     </table>
   </section>
   <h2 class="w-100 mt-4">How do we find these parameters?</h2>
-  <p>
+  <p class="mt-3">
     That is where the <strong>Fourier transform</strong> comes into play. Using the <strong>formula</strong> below we
     can calculate the
     starting
@@ -134,15 +134,17 @@
     <li>Defined in the range of the canvas</li>
     <li>Assumed to be zero</li>
   </ul>
-  <p>
+  <p class="w-100">
     The output of our function will be a <strong>complex number</strong>. The magnitude of this number is the
     <strong>length</strong> of our vector, and its argument is the starting <strong>angle</strong>.
   </p>
-  <p>
-    A <strong>common</strong> choice for used frequencies are natural numbers and their corresponding opposites, <br>so
-    <i>1, -1, 2, -2</i> and so on...
+  <p class="w-100">
+    A <strong>common</strong> choice for used frequencies are natural numbers and their corresponding opposites,
+    <span class="text-nowrap">
+      so <i><strong>1, -1, 2, -2</strong></i> and so on...
+    </span>
   </p>
-  <p>
+  <p class="w-100">
     After we get our vectors, all that remains is tracing out the path they follow and <i>voila</i>! We have our
     drawing.
   </p>

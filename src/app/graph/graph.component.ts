@@ -69,7 +69,6 @@ export class GraphComponent implements OnChanges, AfterViewInit {
     this.addPoint(event);
     this.drawer.clear();
     this.drawer.drawPoints(this.points);
-    this.drawer.close(this.points);
   }
 
   handleMouseDown() {
