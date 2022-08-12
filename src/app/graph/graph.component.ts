@@ -38,11 +38,12 @@ export class GraphComponent implements OnChanges, AfterViewInit {
 
   ngAfterViewInit(): void {
     this.drawer = new GraphOperations(this.canvas.nativeElement);
+    this.resizeEvent();
+    fromEvent(window, 'resize').subscribe(this.resizeEvent);
   }
 
-  // Deprecated
   resizeEvent = () => {
-    this.canvas.nativeElement.width = Math.min(window.innerWidth - 100, 800);
+    this.canvas.nativeElement.width = Math.min(window.innerWidth, 800);
     this.canvas.nativeElement.height = 5 / 8 * this.canvas.nativeElement.width;
     this.drawer.clear();
   }
