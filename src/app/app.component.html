@@ -1,6 +1,6 @@
 <main class="container d-flex flex-column align-items-center my-2">
   <h1 class="text-center">Fourier drawer</h1>
-  <p class="text-center">Draw a shape below, and a Fourier series will be calculated approximating it!</p>
+  <p class="text-center hint">Draw a shape below, and a Fourier series will be calculated approximating it!</p>
   <graph
     #graph
     [circles]="circles"
@@ -8,12 +8,14 @@
     [speed]="speed"
     [(reset)]="reset"
   ></graph>
-  <div class="row w-100 align-items-end mt-2">
-    <div class="col-12 col-sm-auto d-flex justify-content-center align-items-end mt-2">
-      <button
-        class="col-auto btn btn-primary reset-button text-center"
-        (click)="handleReset()"
-      >Reset</button>
+  <div class="row w-100 align-items-end my-2">
+    <div class="col-12 col-sm-auto d-flex justify-content-center align-items-end mt-2 px-2">
+      <div class="col d-flex justify-content-end">
+        <button
+          class="btn btn-primary reset-button text-center"
+          (click)="handleReset()"
+        >Reset</button>
+      </div>
       <div class="col-auto d-flex flex-column align-items-center mx-3">
         <div class="text-center">Terms</div>
         <input
@@ -25,9 +27,9 @@
           [(ngModel)]="termsInput"
         >
       </div>
-      <div class="col-auto d-flex flex-column justify-content-center switch-container">
-        <div class="text-center">Circles</div>
-        <div class="d-flex justify-content-center align-items-center circle-switch form-switch">
+      <div class="col d-flex flex-column switch-container">
+        <div>Circles</div>
+        <div class="d-flex align-items-center circle-switch form-switch">
           <input
             class="form-check-input"
             type="checkbox"
@@ -37,7 +39,7 @@
         </div>
       </div>
     </div>
-    <div class="col flex-column mt-2">
+    <div class="col flex-column mt-2 p-0">
       <div class="text-center">Speed</div>
       <div class="d-flex speed-slider align-items-center">
         <input
@@ -51,8 +53,20 @@
       </div>
     </div>
   </div>
+  <h2 class="w-100 text-left mt-4">What am I looking at?</h2>
+  <p class="mt-3">
+    What you are seeing is the power of the <strong>Fourier transform</strong> used on a set of points provided by your
+    <strong>mouse</strong> (courtesy of you, of course).
+  </p>
+  <p>
+    It turns out that <strong>any</strong> shape can be drawn using a sufficiently <strong>large amount of
+      vectors</strong> rotating at different speeds. By tweaking the <strong>length</strong> of every vector and the
+    <strong>angle</strong> at which it
+    starts rotating, we can trace out our desired drawing.
+  </p>
+  <p class="hint">Below you can take a look at the parameters that produce your drawing...</p>
   <button
-    class="ft-table-button btn btn-primary col-12 d-flex mt-3"
+    class="w-100 ft-table-button btn btn-primary d-flex"
     (click)="toggleVectorData()"
   >
     <label class="flex-grow-1">Vector data</label>
@@ -89,43 +103,62 @@
       </tbody>
     </table>
   </section>
-  <article class="row justify-content-center mt-3">
-    <p>
-      What you are seeing is the power of the Fourier transform used on a set of points provided by your mouse input.
-      It turns out that any shape can be drawn using a sufficiently large amount of vectors rotating at different
-      speeds.
-      By tweaking the length of every vector and the angle at which it starts rotating, we can trace out our desired
-      drawing.
-      The only question is: how do find these parameters?
+  <h2 class="w-100 mt-4">How do we find these parameters?</h2>
+  <p>
+    That is where the <strong>Fourier transform</strong> comes into play. Using the <strong>formula</strong> below we
+    can calculate the
+    starting
+    conditions for a vector with frequency &#x3be;.
+  </p>
+  <img
+    class="w-100 formula"
+    src="assets/formula.svg"
+  >
+  <p class="mt-2">
+    If you would like to learn more about the math involved in this, check out this <strong>video</strong> by
+    <strong>3blue1brown</strong>. It provides a nice, <i>intuitive</i> explanation.
+  </p>
+  <iframe
+    class="w-100 mb-3"
+    src="https://www.youtube.com/embed/r6sGWTCMz2k"
+    title="YouTube video player"
+    frameborder="0"
+    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+    allowfullscreen
+  ></iframe>
+  <p class="mt-3">
+    Normally an <i>infinite</i> integral would be quite the headache, but in the case of this app the function we are
+    trying to draw is either
+  </p>
+  <ul class="w-100">
+    <li>Defined in the range of the canvas</li>
+    <li>Assumed to be zero</li>
+  </ul>
+  <p>
+    The output of our function will be a <strong>complex number</strong>. The magnitude of this number is the
+    <strong>length</strong> of our vector, and its argument is the starting <strong>angle</strong>.
+  </p>
+  <p>
+    A <strong>common</strong> choice for used frequencies are natural numbers and their corresponding opposites, <br>so
+    <i>1, -1, 2, -2</i> and so on...
+  </p>
+  <p>
+    After we get our vectors, all that remains is tracing out the path they follow and <i>voila</i>! We have our
+    drawing.
+  </p>
+  <hr class="w-80">
+  <footer class="d-flex flex-column justify-content-center">
+    <p class="hint text-center">Thanks for reading my page!</p>
+    <p class="hint">
+      Created by
+      <a
+        class="hint"
+        href="https://www.linkedin.com/in/dominik-wawrzyniuk-56a23a243/"
+      >Dominik Wawrzyniuk</a> |
+      <a
+        class="hint"
+        href="https://github.com/lazurastv/Fourier-drawer"
+      >GitHub</a>
     </p>
-    <p>
-      That is where the Fourier transform comes into play. Using the formula below we can calculate the starting
-      conditions for a vector with frequency &#x3be;.
-    </p>
-    <img
-      class="formula"
-      src="assets/formula.svg"
-    >
-    <p class="mt-3">
-      Normally an infinite integral would be quite the headache, but in the case of this app the function we are trying
-      to draw is defined in a given range (on the canvas), and assumed to be zero everywhere else.
-    </p>
-    <p>
-      The output of our function will be a complex number. The magnitude of this number is the length of our vector, and
-      its argument is the starting angle. A common choice for used frequencies are natural numbers and their
-      corresponding opposites.
-    </p>
-    <p>
-      If you would like to learn more about the math involved in this, check out this video by
-      3blue1brown. It provides a nice, intuitive explanation.
-    </p>
-    <iframe
-      class="mb-3"
-      src="https://www.youtube.com/embed/r6sGWTCMz2k"
-      title="YouTube video player"
-      frameborder="0"
-      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-      allowfullscreen
-    ></iframe>
-  </article>
+  </footer>
 </main>
